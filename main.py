@@ -1,45 +1,71 @@
-from profilehooks import profile
+import time
 
 
-def fibonacci_rec(n: int) -> int:
-    """Возвращает N-е число Фибоначчи. Реализована рекурсивно согласно
-    формуле вычисления последовательности.
+def gcd_recursive(a: int, b: int) -> int:
+    """Вычисляет наибольший общий делитель двух целых чисел.
+    Рекурсивная реализация
 
-    :param n: порядковый номер числа Фибоначчи
-    :return: число Фибоначчи
+    :param a: целое число a
+    :param b: целое число b
+    :return: значение наибольшего общего делителя
     """
     pass
 
 
-def fibonacci_iter(n: int) -> int:
-    """Возвращает N-е число Фибоначчи. Реализована итеративно с использованием
-    массива для хранения вычисляемых данных.
+def gcd_iterative_slow(a: int, b: int) -> int:
+    """Вычисляет наибольший общий делитель двух целых чисел.
+    Медленная итеративная реализация
 
-    :param n: порядковый номер числа Фибоначчи
-    :return: число Фибоначчи
+    :param a: целое число a
+    :param b: целое число b
+    :return: значение наибольшего общего делителя
     """
     pass
 
 
-def fibonacci(n: int) -> int:
-    """Возвращает N-е число Фибоначчи. Реализована итеративно без использования массива.
+def gcd_iterative_fast(a: int, b: int) -> int:
+    """Вычисляет наибольший общий делитель двух целых чисел.
+    Быстрая итеративная реализация
 
-    :param n: порядковый номер числа Фибоначчи
-    :return: число Фибоначчи
+    :param a: целое число a
+    :param b: целое число b
+    :return: значение наибольшего общего делителя
+    """
+    pass
+
+
+def lcm(a: int, b: int) -> int:
+    """Вычисляет наименьшее общее кратное двух натуральных чисел
+
+    :param a: натуральное число a
+    :param b: натуральное число b
+    :return: значение наименьшего общего кратного
     """
     pass
 
 
 def main():
-    n = 35
-    print(f"Вычисление {n} числа Фибоначчи рекурсивно:")
-    print(fibonacci_rec(n))
+    a = 1005002
+    b = 1354
+    print(f"Вычисление НОД чисел {a} и {b} рекурсивно:")
+    start_time = time.time()
+    print(gcd_recursive(a, b))
+    print(f"Продолжительность: {time.time() - start_time} сек")
 
-    print(f"\nВычисление {n} числа Фибоначчи итеративно:")
-    print(fibonacci_iter(n))
+    print(f"\nВычисление НОД чисел {a} и {b} итеративно с вычитанием:")
+    start_time = time.time()
+    print(gcd_iterative_slow(a, b))
+    print(f"Продолжительность: {time.time() - start_time} сек")
 
-    print(f"\nВычисление {n} числа Фибоначчи итеративно без использования массива:")
-    print(fibonacci_iter(n))
+    print(f"\nВычисление НОД чисел {a} и {b} итеративно с делением:")
+    start_time = time.time()
+    print(gcd_iterative_fast(a, b))
+    print(f"Продолжительность: {time.time() - start_time} сек")
+
+    print(f"\nВычисление НОК чисел {a} и {b}:")
+    start_time = time.time()
+    print(lcm(a, b))
+    print(f"Продолжительность: {time.time() - start_time} сек")
 
 
 if __name__ == "__main__":
