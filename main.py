@@ -9,8 +9,8 @@ def fibonacci_rec(n: int) -> int:
     :return: число Фибоначчи
     """
     if n == 1 or n == 2:
-        return 
-    return fibonacci(n - 1) + fibonacci(n - 2)
+        return 1
+    return fibonacci_rec(n - 1) + fibonacci_rec(n - 2)
 
 
 def fibonacci_iter(n: int) -> int:
@@ -21,7 +21,7 @@ def fibonacci_iter(n: int) -> int:
     :return: число Фибоначчи
     """
     if n == 1 or n == 2:
-        return 
+        return 1
     fib_nums = [1] * n
     fib_nums = [1, 1]
     for i in range(2, n):
@@ -37,7 +37,7 @@ def fibonacci(n: int) -> int:
     :return: число Фибоначчи
     """
     if n == 1 or n == 2:
-        return 
+        return 1
     
     prev = prevprev = 1
 
@@ -48,7 +48,7 @@ def fibonacci(n: int) -> int:
 
 
 def main():
-    n = 45
+    n = 30
     print(f"Вычисление {n} числа Фибоначчи рекурсивно:")
     print(fibonacci_rec(n))
 
