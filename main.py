@@ -2,51 +2,49 @@ import time
 
 
 def gcd_recursive(a: int, b: int) -> int:
-    """Вычисляет наибольший общий делитель двух целых чисел.
-    Рекурсивная реализация
-
-    :param a: целое число a
-    :param b: целое число b
-    :return: значение наибольшего общего делителя
-    """
-    pass
+    if type(a) != int  or type(b) != int:
+        return "Нельзя не целые числа!"
+    a, b = abs(a) , abs(b)
+    if b == 0:
+        return a
+    return gcd_recursive(b, a % b)
 
 
 def gcd_iterative_slow(a: int, b: int) -> int:
-    """Вычисляет наибольший общий делитель двух целых чисел.
-    Медленная итеративная реализация
-
-    :param a: целое число a
-    :param b: целое число b
-    :return: значение наибольшего общего делителя
-    """
-    pass
+    if type(a) != int  or type(b) != int:
+        return "Нельзя не целые числа!"
+    a, b = abs(a) , abs(b)
+    if a == 0:
+        return b
+    if b == 0:
+        return a
+    while a != b:
+        if a > b:
+            a -= b
+        else:
+            b -= a
+    return a
 
 
 def gcd_iterative_fast(a: int, b: int) -> int:
-    """Вычисляет наибольший общий делитель двух целых чисел.
-    Быстрая итеративная реализация
-
-    :param a: целое число a
-    :param b: целое число b
-    :return: значение наибольшего общего делителя
-    """
-    pass
+    if type(a) != int  or type(b) != int:
+        return "Нельзя не целые числа!"
+    a, b = abs(a), abs(b)
+    while b:
+        a, b = b, a % b
+    return a
 
 
 def lcm(a: int, b: int) -> int:
-    """Вычисляет наименьшее общее кратное двух натуральных чисел
-
-    :param a: натуральное число a
-    :param b: натуральное число b
-    :return: значение наименьшего общего кратного
-    """
-    pass
+    if type(a) != int  or type(b) != int:
+        return "Нельзя не целые числа!"
+    a, b = abs(a) , abs(b)
+    return a * b // gcd_iterative_fast(a, b)
 
 
 def main():
-    a = 1005002
-    b = 1354
+    a = 100
+    b = 1000
     print(f"Вычисление НОД чисел {a} и {b} рекурсивно:")
     start_time = time.time()
     print(gcd_recursive(a, b))
