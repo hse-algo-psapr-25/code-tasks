@@ -22,7 +22,6 @@ def fibonacci_iter(n: int) -> int:
     """
     if n == 1 or n == 2:
         return 1
-    fib_nums = [1] * n
     fib_nums = [1, 1]
     for i in range(2, n):
         fib_nums.append(fib_nums[-1] + fib_nums[-2])
