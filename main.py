@@ -1,6 +1,5 @@
 import time
 
-
 def gcd_recursive(a: int, b: int) -> int:
     if type(a) != int  or type(b) != int:
         return "Нельзя не целые числа!"
@@ -43,8 +42,8 @@ def lcm(a: int, b: int) -> int:
 
 
 def main():
-    a = 100
-    b = 1000
+    a = 3998808
+    b = 345576
     print(f"Вычисление НОД чисел {a} и {b} рекурсивно:")
     start_time = time.time()
     print(gcd_recursive(a, b))

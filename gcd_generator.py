@@ -1,4 +1,5 @@
 import random
+import main
 
 COMMON_FACTORS = 0
 A_ONLY_FACTORS = 1
@@ -63,26 +64,19 @@ class GcdGenerator:
     @property
     def gcd_value(self) -> int:
         """Возвращает значение НОД для a_value и b_value"""
-        pass
+        return self.__values[COMMON_FACTORS]
 
     @property
     def a_value(self) -> int:
-        """Возвращает число, полученное в результате перемножения простых чисел,
-        возведенных в случайную степень. Число имеет как общие, так и различные
-        множители с числом b_value"""
-        pass
+        return self.__values[A_ONLY_FACTORS] * self.__values[COMMON_FACTORS]
 
     @property
     def b_value(self) -> int:
-        """Возвращает число, полученное в результате перемножения простых чисел,
-        возведенных в случайную степень. Число имеет как общие, так и различные
-        множители с числом a_value"""
-        pass
+        return self.__values[B_ONLY_FACTORS] * self.__values[COMMON_FACTORS]
 
     @property
     def lcm_value(self) -> int:
-        """Возвращает значение НОК для a_value и b_value"""
-        pass
+        return self.a_value * self.b_value // self.gcd_value
 
     @property
     def max_factor_cnt(self) -> int:
@@ -98,13 +92,31 @@ class GcdGenerator:
         умолчанию 5.
         :return: None
         """
-        pass
+        if factor_cnt > self.max_factor_cnt or factor_cnt < 1:
+            raise ValueError("Количество множителей не должно быть больше " + str(self.max_factor_cnt) + " и не меньше 1")
+        if max_pow < 1:
+            raise ValueError("Степень числа должен быть больше 0")
+        
+       
+        rnd_number = random.sample(self.__primes, factor_cnt)
+        
+        unikum_a = random.choice(rnd_number)
+        rnd_number.remove(unikum_a)
+        unikum_b = random.choice(rnd_number)
+        rnd_number.remove(unikum_b)
+
+        for k in rnd_number:
+            self.__values[COMMON_FACTORS] = self.__values[COMMON_FACTORS] * k ** random.randint(1, max_pow + 1)
+        
+        self.__values[A_ONLY_FACTORS] = unikum_a ** random.randint(1, max_pow + 1)
+        self.__values[B_ONLY_FACTORS] = unikum_b ** random.randint(1, max_pow + 1)
+    
 
 
 if __name__ == "__main__":
     print("Генерация чисел для проверки НОД/НОК")
     generator = GcdGenerator()
-    values = generator.generate_values(8, 5)
+    values = generator.generate_values(10, 3)
     print("Число a = %d" % generator.a_value)
     print("Число b = %d" % generator.b_value)
     print("НОД(a, b) = %d" % generator.gcd_value)
