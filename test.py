@@ -29,7 +29,7 @@ class TestChecker(unittest.TestCase):
         """Проверка минимального некорректного списка"""
         target_string_length = 1
         strings_to_check = ["0"]
-        self.assertTrue(check_strings(strings_to_check, target_string_length))
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
 
     def test_only_invalid_strings(self):
         """Все строки некорректны"""
