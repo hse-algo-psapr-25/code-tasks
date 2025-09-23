@@ -1,3 +1,11 @@
+def fib(n: int) -> int:
+    if n <= 2:
+        return n
+    a, b = 1, 1
+    for _ in range(n-2):
+        a, b = b, a + b
+    return b
+
 def check_strings(strings: list[str], target_string_length: int) -> bool:
     """Проверяет список строк содержит все строки заданной длины из нулей
     и единиц, где никакие два нуля не стоит рядом.
@@ -7,7 +15,24 @@ def check_strings(strings: list[str], target_string_length: int) -> bool:
 
     return: Результат проверки.
     """
-    pass
+    if target_string_length == 0 and strings == []:
+        return True
+
+    expected_count = fib(target_string_length + 2)
+    if len(strings) != expected_count:
+        return False
+
+    seen = set()
+    for s in strings:
+        if len(s) != target_string_length:
+            return False
+        if "00" in s:
+            return False
+        if s in seen:
+            return False
+        seen.add(s)
+
+    return True
 
 
 def main():
