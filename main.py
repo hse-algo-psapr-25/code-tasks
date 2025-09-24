@@ -10,11 +10,10 @@ def fibonacci_rec(n: int) -> int:
 def fibonacci_iter(n: int) -> int:
     if n == 1 or n == 2:
         return 1
-    fibonacci_nums = [1, 1]
-    for _ in range(2, n):
-        fibonacci_nums.append(fibonacci_nums[-1] + fibonacci_nums[-2])
-
-    return fibonacci_nums[-1]
+    fib = [1, 1]
+    while len(fib) < n:               # пока список короче нужного размера
+        fib.append(fib[-1] + fib[-2]) # добавляем сумму двух последних
+    return fib[-1]
 
 
 def fibonacci(n: int) -> int:
