@@ -61,6 +61,53 @@ class TestChecker(unittest.TestCase):
         strings_to_check = ["001", "010", "011"]  # "001" некорректна
         self.assertFalse(check_strings(strings_to_check, target_string_length))
 
+    def test_non_unique_codes(self):
+        """Проверка неуникальных кодов"""
+        target_string_length = 3
+        strings_to_check = ["101", "010", "101"]
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
+
+    def test_invalid_length_codes(self):
+        """Проверка кодов неправильной длины"""
+        target_string_length = 3
+        strings_to_check = ["1010", "010", "101"]
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
+
+    def test_two_zeros_together_2(self):
+        """Строка с двумя нулями подряд"""
+        target_string_length = 3
+        strings_to_check = ["001", "010", "100"]
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
+
+    def test_partial_overlap_2(self):
+        """Список содержит неполный набор"""
+        target_string_length = 3
+        strings_to_check = ["101", "010"]
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
+
+    def test_non_unique_codes_2(self):
+        """Проверка неуникальных кодов"""
+        target_string_length = 4
+        strings_to_check = ["1010", "0101", "1010"]
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
+
+    def test_invalid_length_codes_3(self):
+        """Проверка кодов неправильной длины для длины 4"""
+        target_string_length = 4
+        strings_to_check = ["10101", "0101", "1010"]
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
+
+    def test_two_zeros_together_3(self):
+        """Строка с двумя нулями подряд"""
+        target_string_length = 4
+        strings_to_check = ["0011", "0101", "1000"]
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
+
+    def test_partial_overlap_3(self):
+        """Список содержит неполный набор"""
+        target_string_length = 4
+        strings_to_check = ["1010", "0101"]
+        self.assertFalse(check_strings(strings_to_check, target_string_length))
 
 if __name__ == "__main__":
     unittest.main()
