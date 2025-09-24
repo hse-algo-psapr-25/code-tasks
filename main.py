@@ -11,8 +11,8 @@ def fibonacci_iter(n: int) -> int:
     if n == 1 or n == 2:
         return 1
     fib = [1, 1]
-    while len(fib) < n:               # пока список короче нужного размера
-        fib.append(fib[-1] + fib[-2]) # добавляем сумму двух последних
+    while len(fib) < n: #пока длина меньше n
+        fib.append(fib[-1] + fib[-2]) #добавляем сумму двух последних
     return fib[-1]
 
 
