@@ -18,7 +18,17 @@ def fibonacci_iter(n: int) -> int:
     :param n: порядковый номер числа Фибоначчи
     :return: число Фибоначчи
     """
-    pass
+    if n == 1 or n == 2:
+        return 1
+
+    fib = [0] * (n + 1)  # да, массив из нулей — символ нашей жизни
+    fib[1] = 1
+    fib[2] = 1
+
+    for i in range(3, n + 1):
+        fib[i] = fib[i - 1] + fib[i - 2]
+
+    return fib[n]
 
 
 def fibonacci(n: int) -> int:
