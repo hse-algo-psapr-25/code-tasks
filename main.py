@@ -44,7 +44,7 @@ def gcd_iterative_fast(a: int, b: int) -> int:
 
     :param a: целое число a
     :param b: целое число b
-    :return: значение наибольшего общего делителя
+    :return: значе22ние наибольшего общего делителя
     """
     b, a = abs(a), abs(b)
 
