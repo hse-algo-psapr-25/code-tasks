@@ -1,3 +1,17 @@
+from typing import List
+
+
+def validate_matrix(matrix: List[List[int]]):
+    if not isinstance(matrix, list):
+        raise ValueError('Matrix should be list')
+    
+
+def get_minor(maxtrix: List[List[int]]):...
+
+
+def _calcualte_determinant_recursive(maxtrix: List[List[int]]) -> int:...
+
+
 def calculate_determinant(matrix: list[list[int]]) -> int:
     """Вычисляет определитель целочисленной квадратной матрицы
 
@@ -6,7 +20,12 @@ def calculate_determinant(matrix: list[list[int]]) -> int:
     квадратной матрицей
     :return: значение определителя
     """
-    pass
+    try:
+        validate_matrix(matrix)
+        return _calcualte_determinant_recursive(matrix)
+    except Exception as e:
+        print(f"Validation error: {e}")
+        raise
 
 
 def main():
