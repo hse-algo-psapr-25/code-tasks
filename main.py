@@ -2,10 +2,16 @@ from typing import List
 
 
 def validate_matrix(matrix: List[List[int]]):
-    if not isinstance(matrix, list):
-        raise ValueError("Matrix should be list")
+    """
+    Валидирует матрицу
+    :param matrix: целочисленная квадратная матрица
+    :raise Exception: если значение параметра не является целочисленной
+    квадратной матрицей
+    """
     if matrix is None:
         raise ValueError("Matrix can't be None")
+    if not isinstance(matrix, list):
+        raise ValueError("Matrix should be list")
     if matrix == []:
         raise ValueError("Mattrix can't be empty")
     if not all(len(row) == len(matrix) for row in matrix):
@@ -14,30 +20,30 @@ def validate_matrix(matrix: List[List[int]]):
         raise ValueError("All matrix items must be integers")
 
 
-def get_minor(matrix: List[List[int]], i: int, j: int):
+def get_matrix_order_lower(matrix: List[List[int]], i: int, j: int):
     """
-    Get minor by i raw and j column
-    params: i: index of raw
-            j: index of column
-    return: minor
+    Понижает порядок матрицы, удаляя из нее i-й строк и j-й столбец
+    :params: i: индекс строки, которая удаляется
+             j: индекс столбца, который удаляется
+    :return: матрица пониженного порядка
     """
     return [row[:j] + row[j+1:] for row in matrix[:i] + matrix[i+1:]]
 
 
 def _calcualte_determinant_recursive(matrix: List[List[int]], n) -> int:
     """
-    Recursive calculate determinant of sqare matrix
-    params: matrix: square matrix
-    return: determinant
+    Рекурсивно вычисляет определитель квадратной матрицы
+    :param matrix: целочисленная квадратная матрица
+    :return: значение определителя
     """
     if n == 1:
         return matrix[0][0]
     det = 0
     first_row = matrix[0]
-    for j, item in enumerate(first_row): # n * (n-1) * (n-2) ... 1 
-        minor = get_minor(matrix, 0, j) 
+    for j, item in enumerate(first_row):
+        order_lower_matrix = get_matrix_order_lower(matrix, 0, j) 
         sign = (-1)  ** j
-        det += item * sign * _calcualte_determinant_recursive(minor, n-1) # n-1
+        det += item * sign * _calcualte_determinant_recursive(order_lower_matrix, n-1) 
     return det
 
 
@@ -54,16 +60,14 @@ def calculate_determinant(matrix: list[list[int]]) -> int:
         n = len(matrix)
         return _calcualte_determinant_recursive(matrix, n)
     except Exception as e:
-        print(f"Validation error: {e}")
-        raise
+        raise e
 
 def main():
-    matrix = [[1, 2], [3, 4]]
+    matrix = [[3, -3, -5, 8], [-3, 2, 4, -6], [2, -5, -7, 5], [-4, 3, 5, -6]]
     print("Матрица")
     for row in matrix:
         print(row)
     
-    print(f"Minor is {get_minor(matrix, 0, 0)}")
     print(f"Определитель матрицы равен {calculate_determinant(matrix)}")
 
 
