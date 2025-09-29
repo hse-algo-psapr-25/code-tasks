@@ -4,7 +4,55 @@ def get_tridiagonal_determinant(matrix: list[list[int]]) -> int:
 
     :return: значение определителя.
     """
-    pass
+
+    if not isinstance(matrix, list):
+        raise Exception("Переменная должна быть списком")
+    
+    if len(matrix) == 0:
+        raise Exception("Список должен быть ненулевым")
+    
+    for row in matrix:
+        if not isinstance(row, list):
+            raise Exception("Каждая строка должна являться списком")
+        if len(row) == 0:
+            raise Exception("Каждая строка должна быть ненулевой")
+        if len(row) != len(matrix):
+            raise Exception("Матрица не является квадратной")
+        for i in row:
+            if not isinstance(i, int):
+                raise Exception("Матрица не является целочисленной")
+    
+    n = len(matrix)
+
+    if n == 1:
+        return matrix[0][0]
+    
+    a = matrix[0][0]
+    b = matrix[0][1]
+    c = matrix[1][0]
+    
+    for i in range(n):
+        for j in range(n):
+            if abs(i-j) > 1 and matrix[i][j] !=0:
+                raise Exception("Матрица не является трехдиагональной")
+            
+    for i in range(1, n):
+        if matrix[i][i] != a:
+            raise Exception("Матрица не является трехдиагональной")
+   
+    if n ==2:
+        return a * matrix[1][1] - b * c
+    
+    for i in range(1, n-1):
+        if matrix[i][i+1] != b:
+            raise Exception("Матрица не является трехдиагональной")
+        
+    for i in range(2, n):
+        if matrix[i][i-1] != c:
+            raise Exception("Матрица не является трехдиагональной")
+
+    new_matrix = [row[1:] for row in matrix[1:]]
+    return a * get_tridiagonal_determinant(new_matrix) - b * c * get_tridiagonal_determinant([row[1:] for row in new_matrix[1:]])
 
 
 def main():
