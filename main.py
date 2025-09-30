@@ -33,15 +33,15 @@ def get_tridiagonal_determinant(matrix: list[list[int]]) -> int:
     
     for i in range(n):
         for j in range(n):
-            if abs(i-j) > 1 and matrix[i][j] !=0:
+            if abs(i-j) > 1 and matrix[i][j] != 0:
                 raise Exception("Матрица не является трехдиагональной")
             
     for i in range(1, n):
         if matrix[i][i] != a:
             raise Exception("Матрица не является трехдиагональной")
    
-    if n ==2:
-        return a * matrix[1][1] - b * c
+    if n == 2:
+        return a * a - b * c
     
     for i in range(1, n-1):
         if matrix[i][i+1] != b:
@@ -50,9 +50,19 @@ def get_tridiagonal_determinant(matrix: list[list[int]]) -> int:
     for i in range(2, n):
         if matrix[i][i-1] != c:
             raise Exception("Матрица не является трехдиагональной")
+        
 
-    new_matrix = [row[1:] for row in matrix[1:]]
-    return a * get_tridiagonal_determinant(new_matrix) - b * c * get_tridiagonal_determinant([row[1:] for row in new_matrix[1:]])
+    def calculate_tridiagonal_determinant(a, b, c,  order):
+
+        if order == 1:
+            return a
+
+        if order == 2:
+            return a * a - b * c
+        
+        return a * calculate_tridiagonal_determinant(a, b, c, order-1) - b * c * calculate_tridiagonal_determinant(a, b, c, order-2)
+        
+    return calculate_tridiagonal_determinant(a, b, c, n)
 
 
 def main():
