@@ -5,6 +5,21 @@ Case = namedtuple("Case", ["matrix", "det"])
 MAX_RANDOM_VALUE = 10
 MIN_RANDOM_VALUE = 1
 
+def add_row_multiple(matrix, order):
+    for m in range(order * 2):
+        i, j = random.sample(range(order), 2)
+        rand_coef = random.randint(MIN_RANDOM_VALUE, MAX_RANDOM_VALUE)
+        for col in range(order):
+            matrix[i][col] += (-1) ** m * rand_coef * matrix[j][col]
+
+
+def add_col_multiple(matrix, order):
+    for m in range(order * 2):
+        i, j = random.sample(range(order), 2)
+        rand_coef = random.randint(MIN_RANDOM_VALUE, MAX_RANDOM_VALUE)
+        for row in range(order):
+            matrix[row][i] += (-1) ** m * rand_coef * matrix[row][j]
+
 
 def generate_matrix_and_det(order) -> Case:
     """Генерирует случайную квадратную целочисленную матрицу с заранее
@@ -18,7 +33,6 @@ def generate_matrix_and_det(order) -> Case:
     if not isinstance(order, int) or order < 1:
         raise Exception("Order must be a positive integer")
 
-    # пока случайно создам определитель
     det = random.randint(MIN_RANDOM_VALUE, MAX_RANDOM_VALUE)
     
     # если порядок 1, то матрица из одного элемента (определителя)
@@ -30,21 +44,14 @@ def generate_matrix_and_det(order) -> Case:
 
     # первый элемент матрицы -- определитель
     matrix[0][0] = det 
-    #print("Исходная:", matrix)
 
-    # меняем рандомные строки элементарными преобразованиями
-    # мб ещё что-нибудь покрутить тут
-    for _ in range(order * 2):
-        i, j = random.sample(range(order), 2)
-        rand_coef = random.randint(MIN_RANDOM_VALUE, MAX_RANDOM_VALUE)
-        for col in range(order):
-            matrix[i][col] += rand_coef * matrix[j][col]
-        #print(f"Поменяли строку {i}:", matrix)
+    add_row_multiple(matrix, order)
+    add_col_multiple(matrix, order)
 
     return Case(matrix=matrix, det=det)
 
 def main():
-    n = 2
+    n = 4
     print(f"Генерация матрицы порядка {n}")
     result = generate_matrix_and_det(n)
     print("\nОпределитель сгенерированной матрицы равен", result.det)

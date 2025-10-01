@@ -1,7 +1,22 @@
 from matrix_generator import generate_matrix_and_det
 
+def validation_matrix(matrix: list[list[int]]):
+    if not isinstance(matrix, list):
+       raise TypeError("Matrix must be a list of lists")
+    
+    order = len(matrix)
+
+    if order == 0:
+        raise ValueError("Matrix must be non-empty")
+    
+    for row in matrix:
+        if len(row) != order:
+            raise ValueError("Matrix must be square")
+        if not all(isinstance(x, int) for x in row):
+            raise TypeError("Matrix must contain only integers")
+        
+
 def calculate_determinant(matrix: list[list[int]]) -> int:
-    # тут валидация
     """Вычисляет определитель целочисленной квадратной матрицы
 
     :param matrix: целочисленная квадратная матрица
@@ -9,15 +24,7 @@ def calculate_determinant(matrix: list[list[int]]) -> int:
     квадратной матрицей
     :return: значение определителя
     """
-    if not isinstance(matrix, list):
-        raise Exception("Something went wrong")
-
-    order = len(matrix)
-
-    # нужно проверить:
-    # что матрица квадратная (и строки одинаковой длины)
-    # что элементы числа
-
+    validation_matrix(matrix)
     return _rec_det(matrix)
 
 def _rec_det(matrix: list[list[int]]) -> int:
