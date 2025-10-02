@@ -17,25 +17,33 @@ def get_tridiagonal_determinant(matrix: list[list[int]]) -> int:
             if j < i - 1 or j > i + 1:
                 if matrix[i][j] != 0:
                     raise ValueError("Матрица должна быть трёхдиагональной")
-    a = [matrix[i][i] for i in range(n)]
-    if any(x != a[0] for x in a):
-        raise ValueError("Неверные значения на главной диагонали")
-    if n > 1:
-        b = [matrix[i][i + 1] for i in range(n - 1)]
-        c = [matrix[i + 1][i] for i in range(n - 1)]
-        if any(x != b[0] for x in b):
+
+    middle = matrix[0][0]
+    for i in range(1, n):
+        if matrix[i][i] != middle:
+            raise ValueError("Неверные значения на главной диагонали")
+
+    if n == 1:
+        return middle
+
+    upper = matrix[0][1]
+    for i in range(1, n - 1):
+        if matrix[i][i + 1] != upper:
             raise ValueError("Неверные значения на верхней диагонали")
-        if any(x != c[0] for x in c):
+
+    lower = matrix[1][0]
+    for i in range(2, n):
+        if matrix[i][i - 1] != lower:
             raise ValueError("Неверные значения на нижней диагонали")
-    else:
-        b = []
-        c = []
-    determinant = [0] * (n + 1)
-    determinant[0] = 1
-    determinant[1] = a[0]
-    for i in range(2, n + 1):
-        determinant[i] = a[i - 1] * determinant[i - 1] - b[i - 2] * c[i - 2] * determinant[i - 2]
-    return determinant[n]
+
+    prev2 = 1
+    prev1 = middle
+
+    for i in range(1, n):
+        current = middle * prev1 - upper * lower * prev2
+        prev2, prev1 = prev1, current
+
+    return prev1
 
 
 def main():
