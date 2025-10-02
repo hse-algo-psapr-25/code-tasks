@@ -1,3 +1,18 @@
+def validation(matrix: list[list[int]]):
+    if not isinstance(matrix, list):
+       raise TypeError("Матрица должна быть списком с вложенными списками")
+    
+    order = len(matrix)
+
+    if order == 0:
+        raise ValueError("Матрица не должна быть пустой")
+    
+    for row in matrix:
+        if len(row) != order:
+            raise ValueError("Матрица должна быть квадратной")
+        if not all(isinstance(x, int) for x in row):
+            raise TypeError("Матрица должна содержать только целочисленные значения")
+        
 def calculate_determinant(matrix: list[list[int]]) -> int:
     """Вычисляет определитель целочисленной квадратной матрицы
 
@@ -6,6 +21,7 @@ def calculate_determinant(matrix: list[list[int]]) -> int:
     квадратной матрицей
     :return: значение определителя
     """
+    validation(matrix)
     n = len(matrix)
     match n:
         case 1:
