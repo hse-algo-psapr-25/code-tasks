@@ -6,7 +6,25 @@ def calculate_determinant(matrix: list[list[int]]) -> int:
     квадратной матрицей
     :return: значение определителя
     """
-    pass
+    n = len(matrix)
+    match n:
+        case 1:
+            return matrix[0][0]
+        case 2:
+            return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]
+        case n:
+            det = 0
+            for i in range(n):
+                minor = []
+                for j in range(n):
+                    a = []
+                    for k in range(n):
+                        if j != 0 and k != i:
+                            a += [matrix[j][k]]
+                    if a != []:
+                        minor += [a]
+                det += matrix[0][i] * det_int(minor) * (-1)**i
+            return det
 
 
 def main():
