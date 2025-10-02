@@ -23,7 +23,7 @@ def calculate_determinant(matrix: list[list[int]]) -> int:
                             a += [matrix[j][k]]
                     if a != []:
                         minor += [a]
-                det += matrix[0][i] * det_int(minor) * (-1)**i
+                det += matrix[0][i] * calculate_determinant(minor) * (-1)**i
             return det
 
 
