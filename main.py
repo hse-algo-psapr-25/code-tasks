@@ -5,25 +5,25 @@ def check_matrix(matrix: list[list[int]]) -> int:
     if not isinstance(matrix, list) or len(matrix) == 0:
         raise Exception("Empty matrix")
 
-    matrix_size = len(matrix)
+    order = len(matrix)
 
     for i in range(len(matrix)):
-        if matrix_size != len(matrix[i]):
+        if order != len(matrix[i]):
             raise Exception("Not square")
 
         for j in range(len(matrix[i])):
             if abs(i - j) > 1 and matrix[i][j]:
                 raise Exception("Not zero by value")
 
-    if matrix_size >= 2:
-        a_diag, b_diag, c_diag = matrix[0][0], matrix[0][1], matrix[1][0]
+    if order >= 2:
+        a, b, c = matrix[0][0], matrix[0][1], matrix[1][0]
 
-        for i in range(matrix_size):
-            if a_diag != matrix[i][i]:
+        for i in range(order):
+            if a != matrix[i][i]:
                 raise Exception("Wrong value on main diagonal")
-            if i < matrix_size - 1 and b_diag != matrix[i][i + 1]:
+            if i < order - 1 and b != matrix[i][i + 1]:
                 raise Exception("Wrong value on upper diagonal")
-            if i and c_diag != matrix[i][i - 1]:
+            if i and c != matrix[i][i - 1]:
                 raise Exception("Wrong value on lower diagonal")
 
 
@@ -35,22 +35,24 @@ def get_tridiagonal_determinant(matrix: list[list[int]]) -> int:
     """
     check_matrix(matrix)
 
-    matrix_size = len(matrix)
-    result_det = 1
+    order = len(matrix)
+    det = 1
 
-    if matrix_size >= 1:
-        a_diag = matrix[0][0]
-        d_1 = result_det = a_diag
+    a = matrix[0][0]
+    if order >= 1:
+        d_prev2 = det = a
 
-    if matrix_size >= 2:
-        b_diag, c_diag = matrix[0][1], matrix[1][0]
-        result_det = a_diag ** 2 - b_diag * c_diag
+    if order >= 2:
+        b, c = matrix[0][1], matrix[1][0]
+        d_prev1 = det = a * a - b * c
 
-    if matrix_size >= 3:
-        for k in range(2, matrix_size):
-            result_det, d_1 = a_diag * result_det - b_diag * c_diag * d_1, result_det
+    if order >= 3:
+        for _ in range(2, order):
+            d_prev2, d_prev1 = d_prev1, a * d_prev1 - b * c * d_prev2
 
-    return result_det
+        det = d_prev1
+
+    return det
 
 
 def main():
