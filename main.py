@@ -1,62 +1,54 @@
-# main.py
-
 from typing import List
 
 
-def calculate_determinant(matrix: list[list[int]]) -> int:
-    """Вычисляет определитель целочисленной квадратной матрицы
-    методом разложения по строке (Лаплас).
+def calculate_determinant(matrix: List[List[int]]) -> int:
+    """Публичная функция: валидирует вход и один раз запускает расчёт."""
+    _validate_square_int_matrix(matrix)
+    return _determinant(matrix)
 
-    :param matrix: целочисленная квадратная матрица
-    :raise Exception: если значение параметра не является целочисленной
-    квадратной матрицей
-    :return: значение определителя
-    """
-    # валидация
+
+def _validate_square_int_matrix(matrix: List[List[int]]) -> None:
     if matrix is None or not isinstance(matrix, list) or len(matrix) == 0:
-        raise Exception("Something went wrong")
+        raise Exception("Ожидалась непустая квадратная матрица из целых чисел")
 
     order = len(matrix)
     for row in matrix:
         if not isinstance(row, list) or len(row) != order:
-            raise Exception("Something went wrong")
+            raise Exception("Матрица должна быть квадратной")
         for x in row:
             if not isinstance(x, int):
-                raise Exception("Something went wrong")
+                raise Exception("Матрица должна содержать только целые числа")
 
-    # базовый случай
-    if order == 1:
+
+def _determinant(matrix: List[List[int]]) -> int:
+    """Внутренняя рекурсивная функция без валидации."""
+    n = len(matrix)
+    if n == 1:
         return matrix[0][0]
 
-    # разложение по первой строке
     det = 0
-    for idx, item in enumerate(matrix[0]):
-        if item == 0:
-            continue
-        det += item * ((-1) ** idx) * _get_minor(0, idx, matrix)
 
+    first_row = matrix[0]
+    for j, a in enumerate(first_row):
+        if a == 0:
+            continue
+        sub = [row[:j] + row[j + 1:] for row in matrix[1:]]
+        det += a * ((-1) ** j) * _determinant(sub)
     return det
-
-
-def _get_minor(idx_row: int, idx_col: int, matrix: List[List[int]]) -> int:
-    """Возвращает детерминант минора (матрицы без строки idx_row и столбца idx_col)"""
-    # формируем подматрицу (минор)
-    sub = []
-    for r, row in enumerate(matrix):
-        if r == idx_row:
-            continue
-        sub_row = row[:idx_col] + row[idx_col + 1 :]
-        sub.append(sub_row)
-
-    # рекурсивно считаем детерминант минора тем же методом
-    return calculate_determinant(sub)
 
 
 def main():
     matrix = [
-        [3, 7, -5],
-        [-2, 2, 4],
-        [5, -5, -7],
+        [3, 7, -5, 1, 19, 5, 0, -2, 4, 10],
+        [-2, 2, 4, -6, 1, 0, 3, 5, 7, 1],
+        [5, -5, -7, 5, 8, 9, -1, 0, 2, 2],
+        [-4, 3, 5, -6, 17, -1, 9, 0, 2, 3],
+        [3, -3, -5, 8, -9, -1, 0, 2, 4, 7],
+        [-3, 2, 4, -6, 1, 0, 3, 5, 7, 11],
+        [2, -5, -7, 7, 8, 9, -1, 0, -2, 5],
+        [-4, 3, 15, -6, 7, -1, 9, 1, 2, 13],
+        [3, -3, -5, 8, 9, -1, 0, 2, 4, 17],
+        [-13, 2, 4, -6, 1, 0, -3, 5, 7, 1],
     ]
     print("Матрица")
     for row in matrix:
