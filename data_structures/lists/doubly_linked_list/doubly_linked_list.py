@@ -31,33 +31,153 @@ class DoublyLinkedList(BaseList):
         self.tail = None
         self.size = 0
 
+
+
+    # ==== служебные методы ====
+    def _check_index_for_insert(self, index: int):
+        """Проверяет корректность индекса для вставки (0 ≤ index ≤ size)."""
+        if not isinstance(index, int):
+            raise TypeError("Индекс должен быть целым числом")
+        if index < 0 or index > self.size:
+            raise IndexError("Индекс вне допустимого диапазона")
+
+    def _node_at(self, index: int) -> DoublyListNode:
+        """Возвращает узел по индексу (0 ≤ index < size)."""
+        if index < 0 or index >= self.size:
+            raise IndexError("Индекс вне допустимого диапазона")
+
+        # Оптимизируем направление прохода: с головы или с хвоста
+        if index <= self.size // 2:
+            cur = self.head
+            for _ in range(index):
+                cur = cur.next
+            return cur
+        else:
+            cur = self.tail
+            for _ in range(self.size - 1, index, -1):
+                cur = cur.prev
+            return cur
+
+
+
     def append(self, value):
-        """Добавляет элемент в конец списка."""
-        pass
+        """Добавляет элемент в конец списка. O(1)."""
+        new_node = DoublyListNode(value)
+        if self.tail is None:                  # пустой список
+            self.head = self.tail = new_node
+        else:
+            self.tail.next = new_node          # старый хвост → новый
+            new_node.prev = self.tail          # новый знает старый хвост
+            self.tail = new_node               # сдвигаем хвост
+        self.size += 1
 
     def appendleft(self, value):
-        """Добавляет элемент в начало списка."""
-        pass
+        """Добавляет элемент в начало списка. O(1)."""
+        new_node = DoublyListNode(value)
+        if self.head is None:                  # пустой список
+            self.head = self.tail = new_node
+        else:
+            new_node.next = self.head          # новый указывает на старую голову
+            self.head.prev = new_node          # старая голова знает нового слева
+            self.head = new_node               # сдвигаем голову
+        self.size += 1
+
 
     def insert(self, index, value):
         """Вставляет элемент по указанному индексу (0 ≤ index ≤ len)."""
-        pass
+        self._check_index_for_insert(index)
+        if index == self.size:
+            # Вставка в конец эквивалентна append
+            self.append(value)
+            return
+        if index == 0:
+            # Вставка в начало эквивалентна appendleft
+            self.appendleft(value)
+            return
+
+        next_node = self._node_at(index)
+        prev_node = next_node.prev
+        node = DoublyListNode(value)
+
+        # Связываем prev <-> node <-> next
+        node.prev = prev_node
+        node.next = next_node
+        if prev_node:
+            prev_node.next = node
+        next_node.prev = node
+
+        self.size += 1
 
     def remove(self, value):
-        """Удаляет первый элемент с указанным значением."""
-        pass
+        """Удаляет первое вхождение value. Если не найдено — ValueError. O(n)."""
+        cur = self.head
+        while cur is not None:
+            if cur.value == value:
+                prev_node, next_node = cur.prev, cur.next
+
+                if prev_node is None:
+                    self.head = next_node
+                else:
+                    prev_node.next = next_node
+
+                if next_node is None:
+                    self.tail = prev_node
+                else:
+                    next_node.prev = prev_node
+
+                cur.prev = cur.next = None
+                self.size -= 1
+                return
+            cur = cur.next
+        raise ValueError("value not in list")
+
 
     def pop(self):
-        """Удаляет и возвращает последний элемент."""
-        pass
+        """Удаляет и возвращает последний элемент. Пусто -> IndexError. O(1)."""
+        if self.tail is None:
+            raise IndexError("pop from empty list")
+        node = self.tail
+        prev_node = node.prev
+
+        if prev_node is None:                    # единственный элемент
+            self.head = self.tail = None
+        else:
+            prev_node.next = None
+            self.tail = prev_node
+
+        node.prev = node.next = None
+        self.size -= 1
+        return node.value
+
 
     def popleft(self):
-        """Удаляет и возвращает первый элемент."""
-        pass
+        """Удаляет и возвращает первый элемент. Пусто -> IndexError. O(1)."""
+        if self.head is None:
+            raise IndexError("popleft from empty list")
+        node = self.head
+        next_node = node.next
+
+        if next_node is None:                    # единственный элемент
+            self.head = self.tail = None
+        else:
+            next_node.prev = None
+            self.head = next_node
+
+        node.prev = node.next = None
+        self.size -= 1
+        return node.value
+
 
     def index(self, value):
-        """Возвращает индекс первого элемента с указанным значением или None."""
-        pass
+        """Возвращает индекс первого узла с данным значением или None, если не найдено."""
+        i = 0
+        cur = self.head
+        while cur:
+            if cur.value == value:
+                return i
+            i += 1
+            cur = cur.next
+        return None
 
     def __str__(self) -> str:
         """Возвращает строковое представление двусвязного списка."""
@@ -73,13 +193,18 @@ class DoublyLinkedList(BaseList):
         return self.size
 
     def __iter__(self):
-        """Итерация по элементам списка слева направо."""
-        pass
+        """Итерирует по значениям слева направо."""
+        cur = self.head
+        while cur:
+            yield cur.value
+            cur = cur.next
 
     def __reversed__(self):
-        """Итерация по элементам списка справа налево."""
-        pass
-
+        """Итерирует по значениям справа налево."""
+        cur = self.tail
+        while cur:
+            yield cur.value
+            cur = cur.prev
 
 if __name__ == "__main__":
     dll = DoublyLinkedList()
