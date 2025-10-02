@@ -33,7 +33,7 @@ class DoublyLinkedList(BaseList):
 
 
 
-    # ==== служебные методы ====
+   
     def _check_index_for_insert(self, index: int):
         """Проверяет корректность индекса для вставки (0 ≤ index ≤ size)."""
         if not isinstance(index, int):
@@ -46,7 +46,7 @@ class DoublyLinkedList(BaseList):
         if index < 0 or index >= self.size:
             raise IndexError("Индекс вне допустимого диапазона")
 
-        # Оптимизируем направление прохода: с головы или с хвоста
+        
         if index <= self.size // 2:
             cur = self.head
             for _ in range(index):
@@ -63,23 +63,23 @@ class DoublyLinkedList(BaseList):
     def append(self, value):
         """Добавляет элемент в конец списка. O(1)."""
         new_node = DoublyListNode(value)
-        if self.tail is None:                  # пустой список
+        if self.tail is None:                  
             self.head = self.tail = new_node
         else:
-            self.tail.next = new_node          # старый хвост → новый
-            new_node.prev = self.tail          # новый знает старый хвост
-            self.tail = new_node               # сдвигаем хвост
+            self.tail.next = new_node          
+            new_node.prev = self.tail          
+            self.tail = new_node               
         self.size += 1
 
     def appendleft(self, value):
         """Добавляет элемент в начало списка. O(1)."""
         new_node = DoublyListNode(value)
-        if self.head is None:                  # пустой список
+        if self.head is None:                  
             self.head = self.tail = new_node
         else:
-            new_node.next = self.head          # новый указывает на старую голову
-            self.head.prev = new_node          # старая голова знает нового слева
-            self.head = new_node               # сдвигаем голову
+            new_node.next = self.head          
+            self.head.prev = new_node          
+            self.head = new_node               
         self.size += 1
 
 
@@ -87,11 +87,11 @@ class DoublyLinkedList(BaseList):
         """Вставляет элемент по указанному индексу (0 ≤ index ≤ len)."""
         self._check_index_for_insert(index)
         if index == self.size:
-            # Вставка в конец эквивалентна append
+            
             self.append(value)
             return
         if index == 0:
-            # Вставка в начало эквивалентна appendleft
+        
             self.appendleft(value)
             return
 
@@ -99,7 +99,7 @@ class DoublyLinkedList(BaseList):
         prev_node = next_node.prev
         node = DoublyListNode(value)
 
-        # Связываем prev <-> node <-> next
+       
         node.prev = prev_node
         node.next = next_node
         if prev_node:
@@ -139,7 +139,7 @@ class DoublyLinkedList(BaseList):
         node = self.tail
         prev_node = node.prev
 
-        if prev_node is None:                    # единственный элемент
+        if prev_node is None:                   
             self.head = self.tail = None
         else:
             prev_node.next = None
@@ -157,7 +157,7 @@ class DoublyLinkedList(BaseList):
         node = self.head
         next_node = node.next
 
-        if next_node is None:                    # единственный элемент
+        if next_node is None:                    
             self.head = self.tail = None
         else:
             next_node.prev = None
