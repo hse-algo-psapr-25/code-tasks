@@ -38,7 +38,7 @@ def _rec_det(matrix: list[list[int]]) -> int:
     
     det = 0
     for idx, item in enumerate(matrix[0]):
-        det += item * (-1)**idx * _rec_det(_get_minor(0, idx, matrix))
+        det += item * (-1)**idx * _rec_det(_get_minor_matrix(0, idx, matrix))
 
     return det
 
