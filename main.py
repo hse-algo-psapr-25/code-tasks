@@ -40,13 +40,14 @@ def get_tridiagonal_determinant(matrix: list[list[int]]) -> int:
             if matrix[i + 1][i] != c:
                 raise ValueError("Элементы нижней диагонали должны быть одинаковыми")
 
-    if n == 1:
-        return a
-    elif n == 2:
-        return a*a - b*c
-    else:
-        return a * get_tridiagonal_determinant([row[:-1] for row in matrix[:-1]]) \
-               - b * c * get_tridiagonal_determinant([row[:-2] for row in matrix[:-2]])
+    def calculate_tridiagonal_determinant(a, b, c, n):
+        if n == 1:
+            return a
+        if n == 2:
+            return a * a - b * c
+        return a * calculate_tridiagonal_determinant(a, b, c, n - 1) - b * c * calculate_tridiagonal_determinant(a, b, c, n - 2)
+
+    return calculate_tridiagonal_determinant(a, b, c, n)
 
 
 def main():
