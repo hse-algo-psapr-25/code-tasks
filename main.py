@@ -42,9 +42,9 @@ def _rec_det(matrix: list[list[int]]) -> int:
 
     return det
 
-def _get_minor(idx_row, idx_col, matrix):
+def _get_minor_matrix(idx_row, idx_col, matrix):
     '''
-    Возвращаем минор (матрицу без строки idx_row и столбца idx_col)
+    Возвращаем матрицу без строки idx_row и столбца idx_col (для вычисления минора)
     '''
     return [[item for j, item in enumerate(row) if j != idx_col] for i, 
             row in enumerate(matrix) if i != idx_row]
