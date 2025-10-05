@@ -3,57 +3,63 @@ def get_tridiagonal_determinant(matrix: list[list[int]]) -> int:
     :param matrix: целочисленная трехдиагональная квадратная матрица.
     :return: значение определителя.
     """
-
-    if matrix is None or not isinstance(matrix, list):
-        raise Exception("Матрица должна быть списком списков")
-
+    
+    if not isinstance(matrix, list):
+        raise Exception("Переменная должна быть списком")
     n = len(matrix)
     if n == 0:
-        raise Exception("Матрица пуста")
+        raise Exception("Список должен быть ненулевым")
 
     for row in matrix:
-        if not isinstance(row, list) or len(row) != n:
-            raise Exception("Матрица не квадратная")
-        for val in row:
-            if not isinstance(val, int):
-                raise Exception("Матрица должна быть целочисленной")
+        if not isinstance(row, list):
+            raise Exception("Каждая строка должна являться списком")
+        if len(row) != n:
+            raise Exception("Матрица не является квадратной")
+        for item in row:
+            if not isinstance(item, int):
+                raise Exception("Матрица не является целочисленной")
 
-
+    
     for i in range(n):
         for j in range(n):
             if abs(i - j) > 1 and matrix[i][j] != 0:
-                raise Exception("Матрица не является трёхдиагональной")
+                raise Exception("Матрица не является трехдиагональной")
 
-
-    main_val = matrix[0][0]
-    for i in range(n):
-        if matrix[i][i] != main_val:
-            raise Exception("Неверное значение на главной диагонали")
-
-    if n > 1:
-        upper_val = matrix[0][1]
-        for i in range(n - 1):
-            if matrix[i][i + 1] != upper_val:
-                raise Exception("Неверное значение на верхней диагонали")
-
-        lower_val = matrix[1][0]
-        for i in range(1, n):
-            if matrix[i][i - 1] != lower_val:
-                raise Exception("Неверное значение на нижней диагонали")
-
-
+    
     if n == 1:
-        return main_val
+        return matrix[0][0]
+
+    a = matrix[0][0]
+    b = matrix[0][1]      
+    c = matrix[1][0]      
+
+    
+    for i in range(1, n):
+        if matrix[i][i] != a:
+            raise Exception("Матрица не является трехдиагональной")
+
+    
+    for i in range(0, n - 1):
+        if matrix[i][i + 1] != b:
+            raise Exception("Матрица не является трехдиагональной")
+
+    
+    for i in range(1, n):
+        if matrix[i][i - 1] != c:
+            raise Exception("Матрица не является трехдиагональной")
+
+    
     if n == 2:
-        return main_val * main_val - upper_val * lower_val
+        return a * a - b * c
 
-    d = [0] * n
-    d[0] = main_val
-    d[1] = main_val * main_val - upper_val * lower_val
-    for k in range(2, n):
-        d[k] = main_val * d[k - 1] - upper_val * lower_val * d[k - 2]
+    
+    prev = a
+    curr = a * a - b * c
+    for _ in range(3, n + 1):
+        nxt = a * curr - (b * c) * prev
+        prev, curr = curr, nxt
 
-    return d[-1]
+    return curr
 
 
 def main():
@@ -61,13 +67,10 @@ def main():
               [5, 2, -3, 0],
               [0, 5, 2, -3],
               [0, 0, 5, 2]]
-
-    print("Трехдиагональная матрица:")
+    print("Трехдиагональная матрица")
     for row in matrix:
         print(row)
-
-    det = get_tridiagonal_determinant(matrix)
-    print(f"Определитель матрицы равен {det}")
+    print(f"Определитель матрицы равен {get_tridiagonal_determinant(matrix)}")
 
 
 if __name__ == "__main__":
