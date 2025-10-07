@@ -1,12 +1,12 @@
 import unittest
 
 from main import (
-    get_triangle_path_count,
-    binomial_coefficient,
-    PATH_LENGTH_ERROR_MSG,
-    NOT_INT_VALUE_TEMPL,
-    NEGATIVE_VALUE_TEMPL,
     N_LESS_THAN_K_ERROR_MSG,
+    NEGATIVE_VALUE_TEMPL,
+    NOT_INT_VALUE_TEMPL,
+    PATH_LENGTH_ERROR_MSG,
+    binomial_coefficient,
+    get_triangle_path_count,
 )
 
 
@@ -32,10 +32,11 @@ class TestTrianglePath(unittest.TestCase):
     def test_triangle_path(self):
         """Проверяет корректность вычисления количества маршрутов длиной
         от 1 до 10"""
-        for i in range(1, 10):
-            self.assertEqual(
-                get_triangle_path_count(i), TestTrianglePath.__calculate_result(i)
-            )
+        for n in range(1, 10):
+            with self.subTest(n=n):
+                self.assertEqual(
+                    get_triangle_path_count(n), TestTrianglePath.__calculate_result(n)
+                )
 
 
 class TestBinomialCoefficient(unittest.TestCase):
@@ -76,22 +77,25 @@ class TestBinomialCoefficient(unittest.TestCase):
         for n in range(len(pascals_triangle)):
             for k in range(len(pascals_triangle[n])):
                 for use_rec in [True, False]:
-                    res = binomial_coefficient(n, k, use_rec=use_rec)
-                    self.assertEqual(res, pascals_triangle[n][k])
+                    with self.subTest(msg=f"n={n}, k={k}, use_rec={use_rec}"):
+                        res = binomial_coefficient(n, k, use_rec=use_rec)
+                        self.assertEqual(res, pascals_triangle[n][k])
 
     def test_binomial_coefficient_middle(self):
         """Проверка вычисления биномиального коэффициента при средних
         значениях параметров"""
         for use_rec in [True, False]:
-            res = binomial_coefficient(10, 5, use_rec=use_rec)
-            self.assertEqual(res, 252)
+            with self.subTest(msg=f"use_rec={use_rec}"):
+                res = binomial_coefficient(10, 5, use_rec=use_rec)
+                self.assertEqual(res, 252)
 
     def test_binomial_coefficient_large(self):
         """Проверка вычисления биномиального коэффициента при больших
         значениях параметров"""
         for use_rec in [True, False]:
-            res = binomial_coefficient(30, 20, use_rec=use_rec)
-            self.assertEqual(res, 30045015)
+            with self.subTest(msg=f"use_rec={use_rec}"):
+                res = binomial_coefficient(30, 20, use_rec=use_rec)
+                self.assertEqual(res, 30045015)
 
 
 if __name__ == "__main__":
