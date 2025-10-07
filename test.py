@@ -18,9 +18,10 @@ class TestZeroOne(unittest.TestCase):
         """Проверяет выброс исключения при некорректном значении параметра
         длина строки"""
         for incorrect_val in self.__incorrect_length_values:
-            self.assertRaisesRegex(
-                ValueError, STR_LENGTH_ERROR_MSG, generate_strings, incorrect_val
-            )
+            with self.subTest(incorrect_val=incorrect_val):
+                self.assertRaisesRegex(
+                    ValueError, STR_LENGTH_ERROR_MSG, generate_strings, incorrect_val
+                )
 
     def test_zero_one(self):
         """Проверяет генерацию строк из 0 и 1 для длины строки от 1 до 20"""
@@ -70,22 +71,25 @@ class TestBinomialCoefficient(unittest.TestCase):
         for n in range(len(pascals_triangle)):
             for k in range(len(pascals_triangle[n])):
                 for use_rec in [True, False]:
-                    res = binomial_coefficient(n, k, use_rec=use_rec)
-                    self.assertEqual(res, pascals_triangle[n][k])
+                    with self.subTest(msg=f"n={n}, k={k}, use_rec={use_rec}"):
+                        res = binomial_coefficient(n, k, use_rec=use_rec)
+                        self.assertEqual(res, pascals_triangle[n][k])
 
     def test_binomial_coefficient_middle(self):
         """Проверка вычисления биномиального коэффициента при средних
         значениях параметров"""
         for use_rec in [True, False]:
-            res = binomial_coefficient(10, 5, use_rec=use_rec)
-            self.assertEqual(res, 252)
+            with self.subTest(msg=f"use_rec={use_rec}"):
+                res = binomial_coefficient(10, 5, use_rec=use_rec)
+                self.assertEqual(res, 252)
 
     def test_binomial_coefficient_large(self):
         """Проверка вычисления биномиального коэффициента при больших
         значениях параметров"""
         for use_rec in [True, False]:
-            res = binomial_coefficient(30, 20, use_rec=use_rec)
-            self.assertEqual(res, 30045015)
+            with self.subTest(msg=f"use_rec={use_rec}"):
+                res = binomial_coefficient(30, 20, use_rec=use_rec)
+                self.assertEqual(res, 30045015)
 
 
 if __name__ == "__main__":
