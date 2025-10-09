@@ -63,7 +63,7 @@ class KnapsackAbstractSolver(ABC):
         :param selected_items: список логических значений, где для каждого предмета
         указано включен предмет в рюкзак или нет.
         """
-        pass
+        return sum(self._weights[i] for i in selected_items)
 
     def get_cost(self, selected_items: list[bool]) -> int:
         """Возвращает общую стоимость предметов, добавленных в рюкзак.
@@ -71,7 +71,7 @@ class KnapsackAbstractSolver(ABC):
         :param selected_items: список логических значений, где для каждого предмета
         указано включен предмет в рюкзак или нет.
         """
-        pass
+        return sum(self._costs[i] for i in selected_items)
 
     def _validate_params(
         self, weights: list[int], costs: list[int], weight_limit: int
@@ -86,10 +86,37 @@ class KnapsackAbstractSolver(ABC):
         :raise ValueError: Если в списках присутствует нулевое или отрицательное
         значение.
         """
+        # проверка списков и типов элементов
         self._validate_list(weights, WEIGHTS)
         self._validate_list(costs, COSTS)
-        pass
+
+        # списки одинаковой длины
+        if len(weights) != len(costs):
+            raise ValueError(ErrorMessageEnum.LENGTHS_NOT_EQUAL)
+
+        # элементы -- целые числа
+        if not isinstance(weight_limit, int) or isinstance(weight_limit, bool):
+            raise TypeError(ErrorMessageEnum.NOT_INT_WEIGHT_LIMIT)
+
+        # значения элементов -- положительные
+        if weight_limit <= 0:
+            raise ValueError(ErrorMessageEnum.NOT_POS_WEIGHT_LIMIT)
+
+        # минимальный вес предмета не больше ограничения по весу
+        if weights and weight_limit < min(weights):
+            raise ValueError(ErrorMessageEnum.LESS_WEIGHT_LIMIT)
 
     def _validate_list(self, items: list[int], list_name: str) -> None:
         """Проверяет список весов или список стоимостей в зависимости от параметра list_name"""
-        pass
+
+        if not isinstance(items, list):
+            raise TypeError(ErrorMessageTemplateEnum.NOT_LIST)
+
+        if len(items) == 0:
+            raise ValueError(ErrorMessageTemplateEnum.EMPTY_LIST)
+
+        for value in items:
+            if not isinstance(value, int) or isinstance(value, bool):
+                raise TypeError(ErrorMessageTemplateEnum.NOT_INT)
+            if value <= 0:
+                raise ValueError(ErrorMessageTemplateEnum.NOT_POS)
