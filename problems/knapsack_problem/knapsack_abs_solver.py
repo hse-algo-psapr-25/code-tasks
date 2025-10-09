@@ -57,6 +57,7 @@ class KnapsackAbstractSolver(ABC):
         """
         pass
 
+
     def get_weight(self, selected_items: list[bool]) -> int:
         """Возвращает общий вес предметов, добавленных в рюкзак.
 
@@ -110,13 +111,13 @@ class KnapsackAbstractSolver(ABC):
         """Проверяет список весов или список стоимостей в зависимости от параметра list_name"""
 
         if not isinstance(items, list):
-            raise TypeError(ErrorMessageTemplateEnum.NOT_LIST)
+            raise TypeError(ErrorMessageTemplateEnum.NOT_LIST.format(list_name))
 
         if len(items) == 0:
-            raise ValueError(ErrorMessageTemplateEnum.EMPTY_LIST)
+            raise ValueError(ErrorMessageTemplateEnum.EMPTY_LIST.format(list_name))
 
         for value in items:
             if not isinstance(value, int) or isinstance(value, bool):
-                raise TypeError(ErrorMessageTemplateEnum.NOT_INT)
+                raise TypeError(ErrorMessageTemplateEnum.NOT_INT.format(list_name))
             if value <= 0:
-                raise ValueError(ErrorMessageTemplateEnum.NOT_POS)
+                raise ValueError(ErrorMessageTemplateEnum.NOT_POS.format(list_name))
