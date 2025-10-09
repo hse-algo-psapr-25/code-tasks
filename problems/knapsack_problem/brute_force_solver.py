@@ -10,27 +10,32 @@ class BruteForceSolver(KnapsackAbstractSolver):
         """
         Решает задачу о рюкзаке с использованием полного перебора.
 
-        :return: максимальная возможнаая общая стоимость и список индексов выбранных предметов
+        :return: максимально возможная общая стоимость и список индексов выбранных предметов
         :rtype: KnapsackSolution
         """
-        _n = len(self._weights)
+        _amount = len(self._weights)
         _best_cost: int = 0
         _best_items: list[int] = []
 
         # перебор всех комбинаций k предметов из n
-        for k in range(_n + 1):
+        for k in range(_amount + 1):
             # все возможные комбинации для каждого количества k
-            for comb in combinations(range(_n), k):
-                _items = list(comb)
-                _weight = self.get_weight(_items)
-                if _weight <= self._weight_limit:  # если есть место в рюкзаке...
-                    _cost = self.get_cost(_items)
+            for comb in combinations(range(_amount), k):
+                _selected = [i in comb for i in range(_amount)]
+                _current_weight = self.get_weight(_selected)
+                if (
+                    _current_weight <= self._weight_limit
+                ):  # если есть место в рюкзаке...
+                    _current_cost = self.get_cost(_selected)
                     if (
-                        _cost > _best_cost and len(_items) > 0
+                        _current_cost > _best_cost and len(_selected) > 0
                     ):  # ...кладём предметы с макс. стоимостью
-                        _best_cost = _cost
-                        _best_items = _items
-
+                        _best_cost = _current_cost
+                        _best_items = [
+                            item
+                            for item, is_selected in enumerate(_selected)
+                            if is_selected
+                        ]
         return KnapsackSolution(cost=_best_cost, items=_best_items)
 
 

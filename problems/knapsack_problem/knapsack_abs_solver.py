@@ -57,14 +57,17 @@ class KnapsackAbstractSolver(ABC):
         """
         pass
 
-
     def get_weight(self, selected_items: list[bool]) -> int:
         """Возвращает общий вес предметов, добавленных в рюкзак.
 
         :param selected_items: список логических значений, где для каждого предмета
         указано включен предмет в рюкзак или нет.
         """
-        return sum(self._weights[i] for i in selected_items)
+        return sum(
+            weight
+            for weight, is_selected in zip(self._weights, selected_items)
+            if is_selected
+        )
 
     def get_cost(self, selected_items: list[bool]) -> int:
         """Возвращает общую стоимость предметов, добавленных в рюкзак.
@@ -72,7 +75,11 @@ class KnapsackAbstractSolver(ABC):
         :param selected_items: список логических значений, где для каждого предмета
         указано включен предмет в рюкзак или нет.
         """
-        return sum(self._costs[i] for i in selected_items)
+        return sum(
+            cost
+            for cost, is_selected in zip(self._costs, selected_items)
+            if is_selected
+        )
 
     def _validate_params(
         self, weights: list[int], costs: list[int], weight_limit: int
