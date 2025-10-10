@@ -21,7 +21,10 @@ class BruteForceSolver(KnapsackAbstractSolver):
         for k in range(_amount + 1):
             # все возможные комбинации для каждого количества k
             for comb in combinations(range(_amount), k):
-                _selected = [i in comb for i in range(_amount)]
+                _selected_str = ''.join(
+                    '1' if i in comb else '0' for i in range(_amount)
+                    )
+                _selected = [char == '1' for char in _selected_str]
                 _current_weight = self.get_weight(_selected)
                 if (
                     _current_weight <= self._weight_limit
