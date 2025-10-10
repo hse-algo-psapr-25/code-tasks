@@ -63,6 +63,7 @@ class KnapsackAbstractSolver(ABC):
         :param selected_items: список логических значений, где для каждого предмета
         указано включен предмет в рюкзак или нет.
         """
+        
         return sum(
             weight
             for weight, is_selected in zip(self._weights, selected_items)
@@ -75,6 +76,9 @@ class KnapsackAbstractSolver(ABC):
         :param selected_items: список логических значений, где для каждого предмета
         указано включен предмет в рюкзак или нет.
         """
+        total_weight = self.get_weight(selected_items)
+        if total_weight > self._weight_limit:
+            return 0
         return sum(
             cost
             for cost, is_selected in zip(self._costs, selected_items)
