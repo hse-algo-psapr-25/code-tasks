@@ -20,7 +20,39 @@ def generate_strings(length: int) -> list[str]:
     числом.
     :return: Список строк.
     """
-    pass
+    _validate_length(length)
+
+    strings = []
+    _add_zero("", strings, length)
+    _add_one("", strings, length)
+
+    return strings
+
+
+def _validate_length(length: int):
+    # bool исключаем, 0 и отрицательные запрещаем
+    if not isinstance(length, int) or isinstance(length, bool) or length < 1:
+        raise ValueError(STR_LENGTH_ERROR_MSG)
+
+
+def _add_zero(string: str, strings: list[str], length: int):
+    """Добавляет '0' и вызывает _add_one (взаимная рекурсия)."""
+
+    if len(string) == length - 1:
+        strings.append(string + "0")
+        return
+
+    _add_one(string + "0", strings, length)
+
+
+def _add_one(string: str, strings: list[str], length: int):
+    """Добавляет '1' и вызывает обе функции."""
+    if len(string) == length - 1:
+        strings.append(string + "1")
+        return
+
+    _add_zero(string + "1", strings, length)
+    _add_one(string + "1", strings, length)
 
 
 def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
@@ -32,7 +64,47 @@ def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
     числами или значение параметра n меньше чем k.
     :return: Значение биномиального коэффициента.
     """
-    pass
+    _validate_params(n, k)
+
+    if use_rec:
+        return binom_rec(n, k)
+    return binom_iter(n, k)
+
+
+def _validate_params(n, k):
+    if not isinstance(n, int) or isinstance(n, bool):
+        raise ValueError(NOT_INT_VALUE_TEMPL.format("n"))
+    if not isinstance(k, int) or isinstance(k, bool):
+        raise ValueError(NOT_INT_VALUE_TEMPL.format("k"))
+
+    if n < 0:
+        raise ValueError(NEGATIVE_VALUE_TEMPL.format("n"))
+    if k < 0:
+        raise ValueError(NEGATIVE_VALUE_TEMPL.format("k"))
+
+    if n < k:
+        raise ValueError(N_LESS_THAN_K_ERROR_MSG)
+
+
+def binom_rec(n, k):
+    if k == 0 or k == n:
+        return 1
+    return binom_rec(n - 1, k) + binom_rec(n - 1, k - 1)
+
+
+def binom_iter(n, k):
+    if k == 0 or k == n:
+        return 1
+    coefficients = [[1] * (n + 1) for _ in range(n + 1)]
+
+    for row_index in range(1, n + 1):
+        for col_index in range(1, k + 1):
+            if col_index < row_index:
+                coefficients[row_index][col_index] = (
+                    coefficients[row_index - 1][col_index]
+                    + coefficients[row_index - 1][col_index - 1]
+                )
+    return coefficients[n][k]
 
 
 def main():
