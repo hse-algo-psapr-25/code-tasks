@@ -20,8 +20,36 @@ def get_triangle_path_count(length: int) -> int:
     числом.
     :return: Количество маршрутов.
     """
-    pass
 
+    if not isinstance(length, int) or isinstance(length, bool) or length <= 0:
+        raise ValueError(PATH_LENGTH_ERROR_MSG)
+
+    def a(n):
+        if n == 1:
+            return 0
+        return b(n - 1) + c(n - 1)
+
+    def b(n):
+        if n == 1:
+            return 1
+        return a(n - 1) + c(n - 1)
+
+    def c(n):
+        if n == 1:
+            return 1
+        return a(n - 1) + b(n - 1)
+
+    return a(length)
+
+    # Укороченный вариант (сложнее для понимания, но кажется интереснее сам в себе)
+    # (может быть не применим, для случаев, когда из разных точек разное число дорог)
+    # def start_point(n):
+    #
+    #     def other_point(k):
+    #         return 1 if k == 1 else start_point(k - 1) + other_point(k - 1)
+    #     return 0 if n == 1 else other_point(n - 1) * 2
+    #
+    # return start_point(length)
 
 def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
     """Вычисляет биномиальный коэффициент из n по k.
@@ -32,7 +60,30 @@ def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
     числами или значение параметра n меньше чем k.
     :return: Значение биномиального коэффициента.
     """
-    pass
+
+    for name, value in [("n", n), ("k", k)]:
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise ValueError(NOT_INT_VALUE_TEMPL.format(name))
+        if value < 0:
+            raise ValueError(NEGATIVE_VALUE_TEMPL.format(name))
+
+    if n < k:
+        raise ValueError(N_LESS_THAN_K_ERROR_MSG)
+
+    def rec_binom(n, k):
+        if k == 0 or k == n:
+            return 1
+        return int(n / k * rec_binom(n - 1, k - 1))
+
+    def iter_binom(n, k):
+        if k == 0 or k == n:
+            return 1
+        res = 1
+        for i in range(1, min(k, n - k) + 1):
+            res = res * (n - i + 1) // i
+        return res
+
+    return rec_binom(n, k) if use_rec else iter_binom(n, k)
 
 
 def main():
