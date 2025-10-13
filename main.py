@@ -12,9 +12,10 @@ N_LESS_THAN_K_ERROR_MSG = "Параметр n меньше чем k"
 
 
 def get_triangle_path_count(length: int) -> int:
-    if not isinstance(length, int) or length <= 0 or length is True:
+    if type(length)!= int or length <= 0 :
         raise ValueError(PATH_LENGTH_ERROR_MSG)
     return _a(length)
+
 
 
 def _a(n:int) -> int:
