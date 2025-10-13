@@ -18,9 +18,18 @@ def validate_lst(lst: List[T]) -> None:
     if len(lst) == 0:
         raise ValueError(f'Список не может быть пустым для сортировки')
     
-    type_first_elem = type(lst[0])
-    if not all(type(item) == type_first_elem for item in lst):
-        raise TypeError("Не все элементы списка имеют одинаковый тип")
+    first_elem = lst[0]
+    for item in lst[1:]:
+        try:
+            _ = first_elem < item
+        except TypeError:
+            type1 = type(first_elem)
+            type2 = type(item)
+            
+            if type1 == type2:
+                raise TypeError(f"Переданы несравнимые экземпляры классов '{type2.__name__}' и '{type1.__name__}'")
+            else:
+                raise TypeError(f"Переданы несравнимые экземпляры классов '{type2.__name__}' и '{type1.__name__}'")
 
 
 def merge_sort(lst: List[T], inplace: bool = False) -> Optional[List[T]]:
