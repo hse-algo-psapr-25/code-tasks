@@ -16,7 +16,7 @@ def validate_lst(lst: List[T]) -> None:
     if not isinstance(lst, list):
         raise TypeError(f"Необходимо передать список, а не {type(lst).__name__}")
     if len(lst) == 0:
-        raise ValueError(f'Список не может быть пустым для сортировки')
+        return []
     
     first_elem = lst[0]
     for item in lst[1:]:
