@@ -48,16 +48,21 @@ def _binomial_coefficient_recursive(n: int, k: int) -> int:
 
 
 def _binomial_coefficient_iterative(n: int, k: int) -> int:
-
     if k < 0 or k > n:
         return 0
-    if k > n // 2:
-        k = n - k
+    if k == 0 or k == n:
+        return 1
     
-    c = 1
-    for i in range(k):
-        c = c * (n - i) // (i + 1)
-    return c
+    c = {}
+    
+    for i in range(n + 1):
+        for j in range(min(i, k) + 1):
+            if j == 0 or j == i:
+                c[(i, j)] = 1
+            else:
+                c[(i, j)] = c[(i-1, j-1)] + c[(i-1, j)]
+    
+    return c[(n, k)]
 
 
 def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
