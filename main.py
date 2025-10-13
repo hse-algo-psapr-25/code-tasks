@@ -20,8 +20,34 @@ def generate_strings(length: int) -> list[str]:
     числом.
     :return: Список строк.
     """
-    pass
+    validate_len(length)
+    strings = []
+    add_one(length, strings, "")
+    add_zero(length, strings, "")
+    return strings
 
+def validate_len(length: int) -> None:
+    if not isinstance(length, int) or length < 1 or isinstance(length, bool):
+        raise ValueError(STR_LENGTH_ERROR_MSG)
+    
+def add_zero(length, strings, string):
+    string += "0"
+
+    if len(string) == length:
+        strings.append(string)
+        return
+
+    add_one(length, strings, string)
+
+def add_one(length, strings, string):
+    string += "1"
+
+    if len(string) == length:
+        strings.append(string)
+        return
+    
+    add_one(length, strings, string)
+    add_zero(length, strings, string)
 
 def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
     """Вычисляет биномиальный коэффициент из n по k.
@@ -36,7 +62,7 @@ def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
 
 
 def main():
-    n = 2
+    n = 10
     print(f"Строки длиной {n}:\n{generate_strings(n)}")
 
     n = 30
