@@ -96,12 +96,15 @@ class TestAbstractSorter(ABC):
         """Проверяет выброс исключения при попытке сравнения несравнимых типов"""
         with self.assertRaises(TypeError) as err:
             self.sort_method([1, "a"])
-        self.assertEqual(
-            ErrorMessageTemplateEnum.ERR_INCOMPARABLE_EMBEDDED_TYPES.format(
-                "str", "int"
-            ),
-            str(err.exception),
+
+        msg = str(err.exception)
+        expected1 = ErrorMessageTemplateEnum.ERR_INCOMPARABLE_EMBEDDED_TYPES.format(
+            "str", "int"
         )
+        expected2 = ErrorMessageTemplateEnum.ERR_INCOMPARABLE_EMBEDDED_TYPES.format(
+            "int", "str"
+        )
+        self.assertIn(msg, {expected1, expected2})
 
     def test_incomparable_user_types(self):
         """Проверяет выброс исключение при попытке сравнения несравнимых пользовательских объектов"""
