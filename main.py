@@ -88,12 +88,25 @@ def validate_binomial_coefs(n: int, k: int):
 
 
 def binomial_coefficient_rec(n: int, k: int) -> int:
-    """Вычисляет биномиальный коэффициент из n по k
-    :param n: Количество элементов в множестве, из которого производится выбор.
-    :param k: Количество элементов, которые нужно выбрать.
-    :return: Значение биномиального коэффициента.
     """
-    pass
+    Рекурсивно вычисляет биномиальный коэффициент C(n, k) по правилу Паскаля с кэшированием результатов
+    """
+    validate_binomial_coefs(n, k)
+
+    if k == 0 or k == n:
+        return 1
+
+    k = min(k, n - k)
+
+    from functools import lru_cache
+
+    @lru_cache(maxsize=None)
+    def c(nn: int, kk: int) -> int:
+        if kk == 0 or kk == nn:
+            return 1
+        return c(nn - 1, kk) + c(nn - 1, kk - 1)
+
+    return c(n, k)
 
 
 def binomial_coefficient_iter(n: int, k: int) -> int:
@@ -139,11 +152,11 @@ def main():
     k = 20
     print(
         f"Биномиальный коэффициент (итеративно) при n, k ({n}, {k}) = ",
-        binomial_coefficient(n, k),
+        binomial_coefficient_iter(n, k),
     )
     print(
         f"Биномиальный коэффициент (рекурсивно) при n, k ({n}, {k}) = ",
-        binomial_coefficient(n, k, use_rec=True),
+        binomial_coefficient_rec(n, k, use_rec=True),
     )
 
 
