@@ -79,7 +79,6 @@ def generate_strings(length: int) -> list[str]:
     input_one(length, '', result)
     return result
 
-
 def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
     """Вычисляет биномиальный коэффициент из n по k.
     :param n: Количество элементов в множестве, из которого производится выбор.
@@ -93,8 +92,7 @@ def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
     
     if use_rec:
         return _binomial_coefficient_rec(n, k)
-    return factorial(n)//(factorial(k)*factorial(n-k))
-
+    return _binomial_coefficient_iter(n, k)
 
 def _binomial_coefficient_rec(n: int, k: int) -> int:
     """Вычисляет биномиальный коэффициент из n по k.
@@ -108,20 +106,30 @@ def _binomial_coefficient_rec(n: int, k: int) -> int:
     
     return _binomial_coefficient_rec(n - 1, k) + _binomial_coefficient_rec(n - 1, k - 1)
 
-
-def factorial(n: int):
+def _binomial_coefficient_iter(n: int, k: int) -> int:
+    """Вычисляет биномиальный коэффициент из n по k.
+    :param n: Количество элементов в множестве, из которого производится выбор.
+    :param k: Количество элементов, которые нужно выбрать.
+    :raise ValueError: Если параметры не являются целыми неотрицательными числами или значение параметра n меньше чем k.
+    :return: Значение биномиального коэффициента.
     """
-    Вычисляет итеративно факториал числа
-    param n: Факториал какого числа надо посчитать
-    return result: Факториал числа n
-    """
-    if n < 0:
-        raise ValueError('Факториал определен только для неотрицательных чисел')
-    result = 1
-    for i in range(1, n + 1):
-        result *= i
-    return result
+    if k == 0:
+        return 1
+    
+    i = 0
+    start_row = [1]*(n+1)
 
+    while i < k:
+        # проход всегда может начинаться с диагонального элемента
+        j = i+1
+        res_row = [0]*(n+1)
+        while j <= n:
+            res_row[j] = res_row[j-1] + start_row[j-1]
+            j += 1
+        start_row = res_row
+        i += 1
+
+    return res_row[n]
 
 def main():
     n = 2
