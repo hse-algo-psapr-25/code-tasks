@@ -28,6 +28,7 @@ class KnapsackAbstractSolver(ABC):
         self._weights = weights
         self._costs = costs
         self._weight_limit = weight_limit
+        self._mask = f"0{self.item_cnt}b"
 
     @property
     def item_cnt(self):
@@ -63,7 +64,7 @@ class KnapsackAbstractSolver(ABC):
         :param selected_items: список логических значений, где для каждого предмета
         указано включен предмет в рюкзак или нет.
         """
-        
+
         return sum(
             weight
             for weight, is_selected in zip(self._weights, selected_items)
@@ -76,8 +77,7 @@ class KnapsackAbstractSolver(ABC):
         :param selected_items: список логических значений, где для каждого предмета
         указано включен предмет в рюкзак или нет.
         """
-        total_weight = self.get_weight(selected_items)
-        if total_weight > self._weight_limit:
+        if self.get_weight(selected_items) > self._weight_limit:
             return 0
         return sum(
             cost
@@ -98,23 +98,18 @@ class KnapsackAbstractSolver(ABC):
         :raise ValueError: Если в списках присутствует нулевое или отрицательное
         значение.
         """
-        # проверка списков и типов элементов
         self._validate_list(weights, WEIGHTS)
         self._validate_list(costs, COSTS)
 
-        # списки одинаковой длины
         if len(weights) != len(costs):
             raise ValueError(ErrorMessageEnum.LENGTHS_NOT_EQUAL)
 
-        # элементы -- целые числа
         if not isinstance(weight_limit, int) or isinstance(weight_limit, bool):
             raise TypeError(ErrorMessageEnum.NOT_INT_WEIGHT_LIMIT)
 
-        # значения элементов -- положительные
         if weight_limit <= 0:
             raise ValueError(ErrorMessageEnum.NOT_POS_WEIGHT_LIMIT)
 
-        # минимальный вес предмета не больше ограничения по весу
         if weights and weight_limit < min(weights):
             raise ValueError(ErrorMessageEnum.LESS_WEIGHT_LIMIT)
 
