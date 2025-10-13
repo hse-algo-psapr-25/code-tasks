@@ -80,25 +80,21 @@ def binom_rec(n, k) -> int:
     if (k == 0) or (k == n):
         return 1
     return int(n / k * binom_rec(n - 1, k - 1))
+   
 
-
-def binom_iter(n, k) -> int:
+def binom_iter(n,k) -> int:
     """Итеративное вычисление биномиального коэффициента.
     :var coeffs: таблица для динамического программирования.
     """
     if (k == 0) or (k == n):
         return 1
-
-    coeffs = [[1] * (k + 1) for _ in range(n + 1)]
-    for row_indx in range(1, n + 1):
+    koeffs = [[1] * (n+1) for _ in range (n +1) ]
+    for row_indx in range(1, n+ 1):
         for col_indx in range(1, k + 1):
             if row_indx > col_indx:
-                coeffs[row_indx][col_indx] = (
-                    coeffs[row_indx - 1][col_indx - 1] + coeffs[row_indx - 1][col_indx]
-                )
-
-    return coeffs[n][k]
-
+                koeffs[row_indx][col_indx] = int(koeffs[row_indx -1][col_indx -1] * row_indx / col_indx)
+    
+    return koeffs[n][k]
 
 def main():
     n = 10
