@@ -1,4 +1,4 @@
-from problems.sorting_problem.some_sort import some_sort
+from problems.sorting_problem.merge_sort import some_sort
 
 """В файле расположен пример использования метода сортировки, который необходимо реализовать.
 Метод расположен в problems/sorting_problem/some_sort.py
