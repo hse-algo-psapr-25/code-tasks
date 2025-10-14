@@ -79,7 +79,7 @@ def binom_rec(n, k) -> int:
     """Рекурсивное вычисление биномиального коэффициента."""
     if (k == 0) or (k == n):
         return 1
-    return int(n / k * binom_rec(n - 1, k - 1))
+    return int(binom_rec(n - 1, k - 1) * n / k)
    
 
 def binom_iter(n,k) -> int:
@@ -88,13 +88,14 @@ def binom_iter(n,k) -> int:
     """
     if (k == 0) or (k == n):
         return 1
-    koeffs = [[1] * (n+1) for _ in range (n +1) ]
-    for row_indx in range(1, n+ 1):
+    
+    coeffs = [[1] * (n + 1) for _ in range (n + 1)]
+    for row_indx in range(1, n + 1):
         for col_indx in range(1, k + 1):
             if row_indx > col_indx:
-                koeffs[row_indx][col_indx] = int(koeffs[row_indx -1][col_indx -1] * row_indx / col_indx)
+                coeffs[row_indx][col_indx] = int(coeffs[row_indx - 1][col_indx - 1] * row_indx / col_indx)
     
-    return koeffs[n][k]
+    return coeffs[n][k]
 
 def main():
     n = 10
