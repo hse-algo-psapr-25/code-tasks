@@ -94,6 +94,7 @@ def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
         return _binomial_coefficient_rec(n, k)
     return _binomial_coefficient_iter(n, k)
 
+
 def _binomial_coefficient_rec(n: int, k: int) -> int:
     """Вычисляет биномиальный коэффициент из n по k.
     :param n: Количество элементов в множестве, из которого производится выбор.
@@ -107,29 +108,27 @@ def _binomial_coefficient_rec(n: int, k: int) -> int:
     return _binomial_coefficient_rec(n - 1, k) + _binomial_coefficient_rec(n - 1, k - 1)
 
 def _binomial_coefficient_iter(n: int, k: int) -> int:
-    """Вычисляет биномиальный коэффициент из n по k.
-    :param n: Количество элементов в множестве, из которого производится выбор.
-    :param k: Количество элементов, которые нужно выбрать.
-    :raise ValueError: Если параметры не являются целыми неотрицательными числами или значение параметра n меньше чем k.
-    :return: Значение биномиального коэффициента.
+    """Итеративно вычисляет значение биномиального коэфициента
+
+    Args:
+        n (int): общее число элементов
+        k (int): число элементов для выбора
+
+    Returns:
+        int: значение биномиального коэфициента
     """
-    if k == 0:
+    if k == 0 or k == n:
         return 1
     
-    i = 0
-    start_row = [1]*(n+1)
+    dp = [[0] * (n + 1) for _ in range(k + 1)]
+    dp[0] = [1] * (n + 1)
+    
+    for i in range(1, k + 1):
+        for j in range(i, n + 1):
+            dp[i][j] = dp[i][j-1] + dp[i-1][j-1]
+    
+    return dp[k][n-1] + dp[k-1][n-1]
 
-    while i < k:
-        # проход всегда может начинаться с диагонального элемента
-        j = i+1
-        res_row = [0]*(n+1)
-        while j <= n:
-            res_row[j] = res_row[j-1] + start_row[j-1]
-            j += 1
-        start_row = res_row
-        i += 1
-
-    return res_row[n]
 
 def main():
     n = 2
