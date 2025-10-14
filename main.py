@@ -93,6 +93,32 @@ def binomial_coefficient(n: int, k: int, use_rec=False) -> int:
     if use_rec:
         return _binomial_coefficient_rec(n, k)
     return _binomial_coefficient_iter(n, k)
+<<<<<<< HEAD
+=======
+
+
+def _binomial_coefficient_iter(n: int, k: int) -> int:
+    """Итеративная реализация подсчета биномиальных коэфициентов
+
+    Args:
+        n (int): число элементов
+        k (int): число элементов для выбора 
+
+    Returns:
+        int: значение биномиального коэфициента C(n, k)
+    """
+    if k == 1 or k == 1:
+        return 1
+    
+    dp = [[0] * (n + 1) for _ in range(k + 1)]
+    dp[0] = [1] * (n + 1)
+    
+    for i in range(1, k + 1):
+        for j in range(i, n + 1):
+            dp[i][j] = dp[i][j-1] + dp[i-1][j-1]
+    
+    return dp[k][n-1] + dp[k-1][n-1]
+>>>>>>> 40921eb (Fixes according to comments)
 
 
 def _binomial_coefficient_rec(n: int, k: int) -> int:
