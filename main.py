@@ -1,58 +1,23 @@
-from data_structures.lists.doubly_linked_list.doubly_linked_list import DoublyLinkedList
-from data_structures.lists.linked_list.linked_list import LinkedList
+from problems.knapsack_problem.dynamic_solver import DynamicSolver
+
+"""В данном файле расположен пример решения задачи о рюкзаке.
+Решение задачи методом динамического программирования, которое необходимо реализовать 
+расположено в файле problems/knapsack_problem/dynamic_solver.py"""
 
 
 def main():
-    print("Использование односвязного списка")
-    lst = LinkedList()
-    print("Создан пустой список:", lst)
-
-    lst.append(10)
-    lst.append(20)
-    lst.append(30)
-    print("После добавления элементов:", lst)
-
-    lst.insert(1, 15)
-    print("После вставки 15 в позицию 1:", lst)
-
-    lst.remove(20)
-    print("После удаления элемента 20:", lst)
-
-    idx = lst.index(30)
-    print("Индекс элемента 30:", idx)
-    print("Поиск отсутствующего элемента:", lst.index(99))
-
-    print("Элементы в списке через цикл for:")
-    for x in lst:
-        print(x)
-
-    print("Длина списка:", len(lst))
-
-    print("Использование двусвязного списка")
-    dll = DoublyLinkedList()
-
-    dll.append(10)
-    dll.append(20)
-    dll.append(30)
-    print("После добавления:", dll)
-
-    dll.insert(0, 5)
-    print("После вставки в начало:", dll)
-
-    dll.insert(2, 15)
-    print("После вставки в середину:", dll)
-
-    dll.remove(20)
-    print("После удаления 20:", dll)
-
-    idx = dll.index(30)
-    print(f"Индекс элемента 30: {idx}")
-
-    print("Размер списка:", len(dll))
-
-    print("Элементы списка:", [x for x in dll])
-
-    print("Обратный обход:", [x for x in reversed(dll)])
+    weights = [11, 4, 8, 6, 3, 5, 5]
+    costs = [17, 6, 11, 10, 5, 8, 6]
+    weight_limit = 30
+    print("Пример решения задачи о рюкзаке\n")
+    print(f"Веса предметов для комплектования рюкзака: {weights}")
+    print(f"Стоимости предметов для комплектования рюкзака: {costs}")
+    print(f"Ограничение вместимости рюкзака: {weight_limit}")
+    solver = DynamicSolver(weights, costs, weight_limit)
+    result = solver.get_knapsack()
+    print(
+        f"Максимальная стоимость: {result.cost}, " f"индексы предметов: {result.items}"
+    )
 
 
 if __name__ == "__main__":
