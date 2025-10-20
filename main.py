@@ -14,7 +14,7 @@ from collections import namedtuple
 #     DECR_PROFIT = "Значение прибыли не может убывать с ростом инвестиций"
 
 
-# Result = namedtuple("Result", ["profit", "distribution"])
+Result = namedtuple("Result", ["profit", "distribution"])
 
 
 # class ProfitValueError(Exception):
@@ -41,46 +41,60 @@ def get_invest_distribution(
     profit - максимально возможная прибыль от инвестиций,
     distribution - распределение инвестиций между проектами.
     """
-    project_count = len(profit_matrix[0])
+    
     invest_count = len(profit_matrix)
-    dp = [[0] * project_count for _ in range(invest_count + 1)]
-    
-    prev_dp = [[0] * project_count for _ in range(invest_count + 1)]
-    
-    for project_idx in range(project_count):
-        dp[0][project_idx] = 0
-        prev_dp[0][project_idx] = 0
-    """
-              А   B   C   D
-        100: [15, 18, 16, 17],
-        200: [20, 22, 23, 19],
-        300: [26, 28, 27, 25],
-        400: [34, 33, 29, 31],
-        500: [40, 39, 41, 37],
+    max_profit = [[0] * invest_count]
 
-        AB:
-        Варианты распределения 1:
-        1-1 = 15
-        1-2 = 18
-        Варианты распределения 2:
-        2-1 = 20
-        2-2 = 22
-        1-1 + 1-2 = 15 + 18
-        Варианты распределения 3:
-        3-1 = 26
-        3-2 = 28
-        1-1 + 2-2 = 15 + 22
-        2-1 + 1-2 = 20 + 18
-    """
-    for project_idx in range(project_count):
-        for invest_idx in range(1, invest_count + 1):
+
+    max_profit = _get_max_profits(profit_matrix)
+
+    distribution = _get_distribution(max_profit)
+    return Result(profit=max_profit[-1][-1], distribution=distribution)
+
+def _get_max_profits(profit_matrix):
+    
+    project_count = len(profit_matrix[0])
+    extend_profit_matrix = [[0] * project_count] + profit_matrix
+    project_cnt = len(extend_profit_matrix[0])
+    level_cnt = len(extend_profit_matrix)
+
+    max_profits = [[0] * project_cnt for _ in range(level_cnt)]
+    
+    for level in range(level_cnt):
+        max_profits[level][0] = extend_profit_matrix[level][0]
+        
+    print(f"----------------------------НАЧАЛО---------------------------------")
+    print(extend_profit_matrix)
+    for proj_idx in range(project_cnt):
+        for level in range(level_cnt):
             max_profit = 0
-            for current_invest_idx in range(invest_idx):
-                prev_invest = invest_idx - current_invest_idx
-                
-    
-    return dp
+            max_profit_cur_level = 0
+            print(f"Level: {level}")
+            for cur_level in range(level+1):
+                print(f"Cur Level: {cur_level}")
+                prev_level = level - cur_level
+                cur_profit = extend_profit_matrix[cur_level][proj_idx]
+                prev_profit = max_profits[prev_level][proj_idx - 1]
+                if cur_profit + prev_profit > max_profit:
+                    max_profit = cur_profit + prev_profit
+                    max_profit_cur_level = cur_level
+            max_profits[level][proj_idx] = max_profit
+            print(f"max_profits: {max_profits}")
+            
+    """
+              А   AB   ABC   ABCD
+        0:   [0,  0,   0,    0],
+        100: [15, 18,  18,   18],
+        200: [20, 33,  34,   35],
+        300: [26, 38,  49,   51],
+        400: [34, 44,  56,   66],
+        500: [40, 52,  61,   73],
+    """
+    print(max_profits)
+    return max_profits
 
+def _get_distribution(costs):
+    ...
 def main():
     profit_matrix = [
         [15, 18, 16, 17],
