@@ -44,12 +44,11 @@ def get_invest_distribution(
     _validate_matrix(profit_matrix)
 
     project_cnt = len(profit_matrix[0])
-    level_cnt = len(profit_matrix)
 
     ext_profit_matrix = [[0] * project_cnt] + profit_matrix
 
-    max_profits, back = _get_max_profits(ext_profit_matrix)
-    distribution = _get_distribution(back)
+    max_profits, backtrack_table = _get_max_profits(ext_profit_matrix)
+    distribution = _get_distribution(backtrack_table)
 
     return Result(
         profit=max_profits[-1][-1],
@@ -58,6 +57,13 @@ def get_invest_distribution(
 
 
 def _validate_matrix(profit_matrix: list[list[int]]):
+    """Проверка корректности матрицы прибыли
+    
+    :param profit_matrix: матрица (таблица) прибыли
+    :type profit_matrix: list[list[int]]
+    :raises ValueError: если матрица не является прямоугольной или содержит нечисловые значения
+    :raises ProfitValueError: если в матрице встречаются отрицательные значения или прибыль убывает
+    """
     if (
         not profit_matrix
         or not isinstance(profit_matrix, list)
@@ -76,48 +82,66 @@ def _validate_matrix(profit_matrix: list[list[int]]):
             if value < 0:
                 raise ProfitValueError(ErrorMessages.NEG_PROFIT, j, i)
 
-  
     for j in range(row_len):
         for i in range(1, len(profit_matrix)):
             if profit_matrix[i][j] < profit_matrix[i - 1][j]:
                 raise ProfitValueError(ErrorMessages.DECR_PROFIT, j, i)
 
 
-def _get_max_profits(ext_profit_matrix):
+def _get_max_profits(ext_profit_matrix: list[list[int]]) -> tuple[list[list[int]], list[list[int]]]:
+    """Вычисляет таблицу максимальной прибыли и составляет таблицу распределений инвестиций по проектам
+
+    :param ext_profit_matrix: расширенная таблица прибыли с нулевой строкой в начале
+    :type ext_profit_matrix: list[list[int]]
+    :return: кортеж из двух таблиц:
+        - max_profits: таблица максимальной прибыли,
+        - backtrack_table: таблица распределения инвестиций по проектам 
+    """
     project_cnt = len(ext_profit_matrix[0])
     level_cnt = len(ext_profit_matrix)
 
     max_profits = [[0] * project_cnt for _ in range(level_cnt)]
-    back = [[0] * project_cnt for _ in range(level_cnt)]
+    backtrack_table = [[0] * project_cnt for _ in range(level_cnt)]
 
     for proj_idx in range(project_cnt):
         for level in range(1, level_cnt):
             max_profit = 0
             max_profit_cur_level = 0
+
             for cur_level in range(level + 1):
                 prev_level = level - cur_level
                 cur_profit = ext_profit_matrix[cur_level][proj_idx]
                 prev_profit = 0
+
                 if proj_idx > 0:
                     prev_profit = max_profits[prev_level][proj_idx - 1]
+                
                 total_profit = cur_profit + prev_profit
+
                 if total_profit > max_profit:
                     max_profit = total_profit
                     max_profit_cur_level = cur_level
+                    
             max_profits[level][proj_idx] = max_profit
-            back[level][proj_idx] = max_profit_cur_level
+            backtrack_table[level][proj_idx] = max_profit_cur_level
 
-    return max_profits, back
+    return max_profits, backtrack_table
 
 
-def _get_distribution(back):
-    level_cnt = len(back)
-    project_cnt = len(back[0])
+def _get_distribution(backtrack_table: list[list[int]]) -> list[int]:
+    """Восстанавливает распределение инвестиций между проектами, которое соответствует максимальной прибыли
+    
+    :param backtrack_table: таблица распределения инвестиций по проектам
+    :type backtrack_table: list[list[int]]
+    :return: cписок уровней инвестиций по каждому проекту
+    """
+    level_cnt = len(backtrack_table)
+    project_cnt = len(backtrack_table[0])
 
     distribution = [0] * project_cnt
     level = level_cnt - 1
     for proj_idx in range(project_cnt - 1, -1, -1):
-        cur_level = back[level][proj_idx]
+        cur_level = backtrack_table[level][proj_idx]
         distribution[proj_idx] = cur_level
         level -= cur_level
     return distribution
