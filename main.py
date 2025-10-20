@@ -41,7 +41,75 @@ def get_invest_distribution(
     profit - максимально возможная прибыль от инвестиций,
     distribution - распределение инвестиций между проектами.
     """
-    pass
+
+    # Валидация на типы
+    if not profit_matrix or not isinstance(profit_matrix, list):
+        raise ValueError(ErrorMessages.WRONG_MATRIX)
+    if any(not isinstance(row, list) for row in profit_matrix):
+        raise ValueError(ErrorMessages.WRONG_MATRIX)
+
+    total_units = len(profit_matrix)
+    row_len = len(profit_matrix[0])
+
+    # Валидация корректность матрицы
+    if total_units == 0:
+        raise ValueError(ErrorMessages.WRONG_MATRIX)
+    if row_len == 0:
+        raise ValueError(ErrorMessages.WRONG_MATRIX)
+    for row_index, row in enumerate(profit_matrix):
+        if len(row) != row_len:
+            raise ValueError(ErrorMessages.WRONG_MATRIX)
+        for colum_index, val in enumerate(row):
+            if not isinstance(val, (int, float)):
+                raise ValueError(ErrorMessages.WRONG_MATRIX)
+            if val < 0:
+                raise ProfitValueError(ErrorMessages.NEG_PROFIT, colum_index, row_index)
+            if row_index > 0:
+                prev = profit_matrix[row_index - 1][colum_index]
+                if val < prev:
+                    raise ProfitValueError(ErrorMessages.DECR_PROFIT, colum_index, row_index)
+
+    # Функционал
+    NEG_INFINITY = float("-inf")
+    result_prev = [NEG_INFINITY] * (total_units + 1)
+    result_prev[0] = 0
+    choices_path: list[list[int]] = []
+
+    for left in range(row_len):
+        result_curr = [NEG_INFINITY] * (total_units + 1)
+        choice_path = [-1] * (total_units + 1)
+        for count in range(0, total_units + 1):
+            best_value = NEG_INFINITY
+            best_path = 0
+            for income in range(0, count + 1):
+                prev_u = count - income
+                prev_val = result_prev[prev_u]
+                if prev_val == NEG_INFINITY:
+                    continue
+                add = 0
+                if income > 0:
+                    add = profit_matrix[income - 1][left]
+                val = prev_val + add
+                if val > best_value:
+                    best_value = val
+                    best_path = income
+            result_curr[count] = best_value
+            choice_path[count] = best_path
+        result_prev = result_curr
+        choices_path.append(choice_path)
+
+    max_profit = result_prev[total_units]
+
+    # восстановление распределения
+    distribution = [0] * row_len
+    rem = total_units
+    for item in range(row_len - 1, -1, -1):
+        choice_item = choices_path[item][rem]
+        distribution[item] = choice_item
+        rem -= choice_item
+
+    return Result(int(max_profit), distribution)
+
 
 
 def main():
