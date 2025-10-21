@@ -15,6 +15,7 @@ class ErrorMessages(StrEnum):
 
 
 Result = namedtuple("Result", ["profit", "distributions"])
+LevelResult = namedtuple("LevelResult", ["profit", "distributions"])
 
 
 class ProfitValueError(Exception):
@@ -23,27 +24,6 @@ class ProfitValueError(Exception):
         self.row_idx = row_idx
         super().__init__(message)
 
-
-def generate_distributions(n, k):
-    """
-    Генерирует все способы распределения n одинаковых звёздочек по k коробочкам.
-    Возвращает список кортежей длины k, где каждый элемент — количество звёзд в коробке.
-    """
-    if k == 0:
-        return [] if n > 0 else [()]
-    if n == 0:
-        return [(0,) * k]
-    
-    result = []
-    def backtrack(remaining, boxes_left, current):
-        if boxes_left == 1:
-            result.append(tuple(current + [remaining]))
-            return
-        for i in range(remaining + 1):
-            backtrack(remaining - i, boxes_left - 1, current + [i])
-
-    backtrack(n, k, [])
-    return result
 
 def get_invest_distributions(
     profit_matrix: list[list[int]],
@@ -63,7 +43,105 @@ def get_invest_distributions(
     distributions - списком со всеми вариантами распределения инвестиций между
     проектами, обеспечивающими максимальную прибыль.
     """
-    
+    _validate_profit_matrix(profit_matrix)
+
+    num_levels = len(profit_matrix)
+    num_projects = len(profit_matrix[0])
+    memo_table = [
+        [LevelResult(profit=0, distributions=[]) for _ in range(num_levels)]
+        for _ in range(num_projects)
+    ]
+
+    for project_idx in range(num_projects):
+        for level_idx in range(num_levels):
+            total_units = level_idx + 1
+
+            if project_idx == 0:
+                dist = [0] * num_projects
+                dist[0] = total_units
+                memo_table[project_idx][level_idx] = LevelResult(
+                    profit=profit_matrix[level_idx][0],
+                    distributions=[dist],
+                )
+                continue
+            best_profit = 0
+            best_distributions = []
+
+            for units_prev, units_curr in _generate_distributions(total_units, 2):
+                prev_profit = 0
+                prev_LevelResult = None
+                if units_prev > 0:
+                    prev_LevelResult = memo_table[project_idx - 1][units_prev - 1]
+                    prev_profit = prev_LevelResult.profit
+
+                curr_profit = 0
+                if units_curr > 0:
+                    curr_profit = profit_matrix[units_curr - 1][project_idx]
+
+                new_profit = prev_profit + curr_profit
+
+                if new_profit > best_profit:
+                    best_profit = new_profit
+                    best_distributions = []
+
+                    if units_prev == 0:
+                        new_dist = [0] * num_projects
+                        new_dist[project_idx] = units_curr
+                        best_distributions.append(new_dist)
+                    else:
+                        for prev_dist in prev_LevelResult.distributions:
+                            new_dist = list(prev_dist)
+                            new_dist[project_idx] = units_curr
+                            best_distributions.append(new_dist)
+
+                elif new_profit == best_profit:
+                    if units_prev == 0:
+                        new_dist = [0] * num_projects
+                        new_dist[project_idx] = units_curr
+                        best_distributions.append(new_dist)
+                    else:
+                        for prev_dist in prev_LevelResult.distributions:
+                            new_dist = list(prev_dist)
+                            new_dist[project_idx] = units_curr
+                            best_distributions.append(new_dist)
+
+            memo_table[project_idx][level_idx] = LevelResult(
+                profit=best_profit,
+                distributions=best_distributions,
+            )
+
+    final_LevelResult = memo_table[-1][-1]
+    return Result(profit=final_LevelResult.profit, distributions=final_LevelResult.distributions)
+
+def _backtrack_distributions(remaining, boxes_left, current, result) :
+    """
+    Рекурсивная вспомогательная функция, собирает распределения в result.
+    Не возвращает значение — добавляет кортежи в result.
+    """
+    if boxes_left == 1:
+        result.append(tuple(current + [remaining]))
+        return
+    for i in range(remaining + 1):
+        current.append(i)
+        _backtrack_distributions(remaining - i, boxes_left - 1, current, result)
+        current.pop()
+
+
+def _generate_distributions(n, k):
+    """
+    Генерирует все способы распределения n одинаковых звёздочек по k коробочкам.
+    Возвращает список кортежей длины k, где каждый элемент — количество звёзд в коробке.
+    """
+    if k == 0:
+        return [] if n > 0 else [()]
+    if n == 0:
+        return [(0,) * k]
+
+    result = []
+    _backtrack_distributions(n, k, [], result)
+    return result
+
+def _validate_profit_matrix(profit_matrix: list[list[int]]) -> None:
     if (
         not profit_matrix
         or not all(isinstance(row, list) and row for row in profit_matrix)
@@ -73,7 +151,6 @@ def get_invest_distributions(
         raise ValueError(ErrorMessages.WRONG_MATRIX)
 
     num_projects = len(profit_matrix[0])
-
     for project_idx in range(num_projects):
         prev_value = None
         for row_idx, row in enumerate(profit_matrix):
@@ -83,55 +160,6 @@ def get_invest_distributions(
             if prev_value is not None and value < prev_value:
                 raise ProfitValueError(ErrorMessages.DECR_PROFIT, project_idx, row_idx)
             prev_value = value
-    
-    distributions = list()
-    
-    for i in range(len(profit_matrix[0])):
-        distributions.append([[0, []] for _ in range(len(profit_matrix))])
-        for j in range(len(profit_matrix)):
-            if i == 0:
-                new_distribution = [0] * len(profit_matrix[0])
-                new_distribution[i] = j+1
-                distributions[i][j] = [profit_matrix[j][0], [(new_distribution)]]
-            else:
-                max_profit = 0
-                for k in generate_distributions(j+1, 2):
-                    new_max_profit = 0
-                    for x, y in enumerate(k):
-                        if y == 0:
-                            continue
-                        if x == 0:
-                            new_max_profit += distributions[i-1][y-1][0]
-                        else:
-                            new_max_profit += profit_matrix[y-1][i]
-                    if new_max_profit == max_profit != 0:
-                        if k[0] == 0:
-                            new_distribution = [0] * len(profit_matrix[0])
-                            new_distribution[i] = k[1]
-                            distributions[i][j][1].append(new_distribution)
-                        else:
-                            for dist in distributions[i-1][k[0]-1][1]:
-                                new_distribution = list(dist)
-                                new_distribution[i] = k[1]
-                                distributions[i][j][1].append(new_distribution)
-                    elif new_max_profit > max_profit:
-                        max_profit = new_max_profit
-                        distributions[i][j][0] = max_profit
-                        distributions[i][j][1] = []
-                        if k[0] == 0:
-                            new_distribution = [0] * len(profit_matrix[0])
-                            new_distribution[i] = k[1]
-                            distributions[i][j][1].append(new_distribution)
-                        else:
-                            for dist in distributions[i-1][k[0]-1][1]:
-                                new_distribution = list(dist)
-                                new_distribution[i] = k[1]
-                                distributions[i][j][1].append(new_distribution)
-   
-    return Result(
-        profit=distributions[-1][-1][0],
-        distributions=distributions[-1][-1][1]
-    )
 
 def main():
     profit_matrix = [[8, 6, 6, 1, 4],
