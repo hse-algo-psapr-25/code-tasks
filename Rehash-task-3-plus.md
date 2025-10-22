@@ -73,10 +73,10 @@ classDiagram
     } 
 
     class Stack {
-        +top
+        +head
         +__init__()
         +push(value)
-        +pop(value)
+        +pop()
     }
 
     class DoublyListNode {
@@ -112,17 +112,16 @@ classDiagram
     %% Наследование
     LinkedList --|> BaseList
     DoublyLinkedList --|> BaseList
+    Stack --|> LinkedList
+    Queue --|> DoublyLinkedList
 
     %% Агрегации/композиции
     LinkedList *-- ListNode : head
     ListNode o-- ListNode : next
 
-    Stack *-- LinkedList : top
-
     DoublyLinkedList *-- DoublyListNode : head/tail
     DoublyListNode o-- DoublyListNode : next/prev
 
-    Queue *-- DoublyLinkedList : head/tail
 ```
 
 ### Примечания  
