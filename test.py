@@ -1,13 +1,13 @@
 import unittest
 
-from main import ErrorMessages, SomeResult, some_function
+from main import ErrorMessages, Bounds, find_bounds
 
 
 class TestSomeFunction(unittest.TestCase):
 
     def test_sample(self):
         """Проверяет что-то ..."""
-        self.assertIsNone(some_function(None, None))
+        self.assertIsNone(find_bounds(None, None))
 
 
 if __name__ == "__main__":
