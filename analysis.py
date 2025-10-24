@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import datetime
+from main import find_bounds
+import random
 
 
 def plot_complexity_comparison(max_n=20):
@@ -69,9 +72,22 @@ def plot_complexity(n_values, x_values, title="Асимптотическая с
     plt.show()
 
 
+def measure_time(n):
+    """
+    Замеряет среднее время выполнения find_bounds для списка длины n.
+    """
+    data = sorted(random.randint(0, n) for _ in range(n))
+    start = datetime.now()
+    find_bounds(data, n // 2)
+    end = datetime.now()
+    return (end - start).total_seconds()
+
 if __name__ == "__main__":
     plot_complexity_comparison(max_n=50)
 
     n_values = np.arange(1, 1000)
     x_values = n_values**2
     plot_complexity(n_values, x_values)
+    example_len = np.arange(100, 5000, 100)
+    example_list = [measure_time(n) for n in example_len] 
+    plot_complexity(example_len, example_list)
