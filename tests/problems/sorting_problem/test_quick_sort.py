@@ -5,7 +5,7 @@ from tests.problems.sorting_problem.test_abstract import TestAbstractSorter
 
 
 class TestQuickSort(unittest.TestCase, TestAbstractSorter):
-    """Набор тестов для проверки некоторого метода сортировки."""
+    """Набор тестов для проверки метода быстрой сортировки."""
 
     sort_method = lambda _, items: quick_sort(items)
 
