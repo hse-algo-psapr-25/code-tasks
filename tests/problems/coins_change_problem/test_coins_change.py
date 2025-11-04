@@ -1,14 +1,12 @@
 import unittest
 import sys
 import os
-# Не мог по другому сделать, поэтому так, извините(
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from problems.coin_change_problem.coin_change_problem import coin_change, ErrorMessages
 
 
 class TestCoinChange(unittest.TestCase):
-    
+
     def __check_solution(self, coins: list[int], amount: int, result):
         """Проверяет корректность решения"""
         coin_count, coin_combination = result
@@ -56,7 +54,11 @@ class TestCoinChange(unittest.TestCase):
     def test_non_integer_coins(self):
         """Проверяет выброс исключения при наличии нецелочисленных монет"""
         self.assertRaisesRegex(
-            TypeError, "все монеты должны быть целыми числами", coin_change, [1, 2.5, 5], 10
+            TypeError,
+            "все монеты должны быть целыми числами",
+            coin_change,
+            [1, 2.5, 5],
+            10,
         )
 
     def test_impossible_amount(self):
@@ -90,6 +92,8 @@ class TestCoinChange(unittest.TestCase):
         coins = [1, 2, 5]
         amount = 13
         result = coin_change(coins, amount)
+        coin_count, _ = result
+        self.assertEqual(coin_count, 4)
         self.assertIsNotNone(result)
         self.__check_solution(coins, amount, result)
 
@@ -99,7 +103,7 @@ class TestCoinChange(unittest.TestCase):
         amount = 6
         result = coin_change(coins, amount)
         self.assertIsNotNone(result)
-        coin_count, coin_combination = result
+        coin_count, _ = result
         self.assertEqual(coin_count, 2)
         self.__check_solution(coins, amount, result)
 
@@ -109,7 +113,7 @@ class TestCoinChange(unittest.TestCase):
         amount = 99
         result = coin_change(coins, amount)
         self.assertIsNotNone(result)
-        coin_count, coin_combination = result
+        coin_count, _ = result
         self.assertEqual(coin_count, 9)
         self.__check_solution(coins, amount, result)
 
@@ -118,6 +122,8 @@ class TestCoinChange(unittest.TestCase):
         coins = [10, 25, 50, 100]
         amount = 155
         result = coin_change(coins, amount)
+        coin_count, _ = result
+        self.assertEqual(coin_count, 5)
         self.assertIsNotNone(result)
         self.__check_solution(coins, amount, result)
 
@@ -127,7 +133,7 @@ class TestCoinChange(unittest.TestCase):
         amount = 11
         result = coin_change(coins, amount)
         self.assertIsNotNone(result)
-        coin_count, coin_combination = result
+        coin_count, _ = result
         self.assertEqual(coin_count, 3)
         self.__check_solution(coins, amount, result)
 
@@ -148,7 +154,7 @@ class TestCoinChange(unittest.TestCase):
         amount = 65
         result = coin_change(coins, amount)
         self.assertIsNotNone(result)
-        coin_count, coin_combination = result
+        coin_count, _ = result
         self.assertEqual(coin_count, 3)
         self.__check_solution(coins, amount, result)
 
